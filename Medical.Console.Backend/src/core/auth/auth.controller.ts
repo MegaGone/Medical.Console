@@ -3,7 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { BcryptService } from '../shared/services';
 import { BadRequestException, Body, Controller, ForbiddenException, NotFoundException, Post } from '@nestjs/common';
+import { Public } from './decorators';
 
+@Public()
 @Controller('auth')
 export class AuthController {
   constructor(

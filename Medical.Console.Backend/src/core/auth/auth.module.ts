@@ -5,18 +5,33 @@ import { AuthService } from './auth.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthController } from './auth.controller';
 import { SharedModule } from '../shared/shared.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './guards';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]), 
     SharedModule, 
-    JwtModule.register({
-      global: true,
-      secret: "FbP@Dzr!LL7TP5zknrx&P5&xhcf3o8xNCzYoGCdLco6yQFKa7NPfP@fRNQ!X6eypD?mknfdBgAPq",
-      signOptions: { expiresIn: '4h' },
-    }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        global: true,
+        secret: configService.get<string>("global.secret"),
+        signOptions: { expiresIn: configService.get<string>("global.jwt_expiration") }
+      }),
+      inject: [ConfigService],
+    })
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [
+    ConfigService,
+    AuthService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard
+    }
+  ],
+  exports: [AuthService]
 })
 export class AuthModule {}

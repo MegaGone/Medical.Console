@@ -1,6 +1,6 @@
 import { UserService } from './user.service';
 import { BcryptService } from '../shared/services';
-import { Controller, Post, Body, Get, Param, Delete, Put, Query } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Delete, Put, Query, BadRequestException } from '@nestjs/common';
 import { CreateUserDto, DeleteUserDto, FindUserByIDto, FindUsersPaginatedDto, UpdateUserDto } from './dto';
 
 @Controller('user')
@@ -11,6 +11,10 @@ export class UserController {
 
   @Post("/create")
   public async create(@Body() createUserDto: CreateUserDto) {
+    const existEmail = await this._service.emailIsAlreadyUsed(createUserDto.email);
+    if (existEmail)
+      throw new BadRequestException("Email already in use.")
+
     const stored = await this._service.create({
       ...createUserDto,
       password: await BcryptService.hash(createUserDto.password)

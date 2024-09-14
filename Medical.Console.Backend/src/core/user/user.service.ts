@@ -87,4 +87,20 @@ export class UserService {
       throw new InternalServerErrorException(error)
     }
   }
+
+  public async emailIsAlreadyUsed(email: string): Promise<boolean> {
+    try {
+      const user = await this._repository.findOne(
+        {
+          where: {
+            email
+          },
+        },
+      );
+
+      return !user ? false : true;
+    } catch (error) {
+      throw new InternalServerErrorException(error)
+    }
+  }
 }
