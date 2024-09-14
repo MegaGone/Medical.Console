@@ -1,9 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const config = await app.get<ConfigService>(ConfigService);
 
   app.setGlobalPrefix("api")
   app.useGlobalPipes(
@@ -16,7 +18,9 @@ async function bootstrap() {
     })
   );
 
-  await app.listen(3000);
-  console.log(`http://localhost:3000/`);
+  const port: number = await config.get<number>("global.port");
+
+  await app.listen(port);
+  console.log(`http://localhost:${port}/api/`);
 }
 bootstrap();
