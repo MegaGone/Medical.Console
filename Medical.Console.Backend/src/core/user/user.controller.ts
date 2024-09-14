@@ -1,8 +1,13 @@
+import { ROLE_ENUM } from '../auth/enums';
+import { Roles } from '../auth/decorators';
+import { RoleGuard } from '../auth/guards';
 import { UserService } from './user.service';
 import { BcryptService } from '../shared/services';
-import { Controller, Post, Body, Get, Param, Delete, Put, Query, BadRequestException } from '@nestjs/common';
 import { CreateUserDto, DeleteUserDto, FindUserByIDto, FindUsersPaginatedDto, UpdateUserDto } from './dto';
+import { Controller, Post, Body, Get, Param, Delete, Put, Query, BadRequestException, UseGuards } from '@nestjs/common';
 
+@Roles(ROLE_ENUM.ADMIN)
+@UseGuards(RoleGuard)
 @Controller('user')
 export class UserController {
   constructor(

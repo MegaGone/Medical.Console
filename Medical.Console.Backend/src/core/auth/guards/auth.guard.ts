@@ -41,8 +41,6 @@ export class AuthGuard implements CanActivate {
 
       request["uid"] = payload?.uid;
       request["role"] = payload?.role;
-      console.log(request.uid)
-      console.log(request.role)
     } catch {
       throw new UnauthorizedException();
     }
