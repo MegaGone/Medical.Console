@@ -1,7 +1,7 @@
-import { LoginDto } from "./dto";
 import { JwtService } from "@nestjs/jwt";
 import { AuthService } from "./auth.service";
 import { BcryptService } from "../shared/services";
+import { ForgotPasswordDto, LoginDto } from "./dto";
 import {
   BadRequestException,
   Body,
@@ -39,5 +39,19 @@ export class AuthController {
     return {
       token: await this._jwt.signAsync(payload),
     };
+  }
+
+  @Post("/restore-password")
+  public async restorePassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+    const user = await this._auth.findByEmail(forgotPasswordDto.email);
+    if (!user) throw new NotFoundException("User not found.");
+
+    if (!user.isEnabled || user.isEnabled == 0)
+      throw new ForbiddenException("User is blocked. Talk with the admin.");
+
+    const password = await BcryptService.hash(forgotPasswordDto.password);
+    const restored = await this._auth.restorePassword(forgotPasswordDto.email, password);
+
+    return { restored };
   }
 }

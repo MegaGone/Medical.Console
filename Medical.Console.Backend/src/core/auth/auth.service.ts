@@ -15,13 +15,33 @@ export class AuthService {
       const record = await this._repository.findOne({
         where: {
           email,
-          isEnabled: 1,
         },
         select: ["id", "isEnabled", "password", "role"],
       });
 
       return record;
     } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  public async restorePassword(email: string, password: string): Promise<boolean> {
+    try {
+      const { affected } = await this._repository.update(
+        {
+          email,
+          isEnabled: 1,
+        },
+        {
+          password,
+        },
+      );
+
+      console.log("AFFECTED ---------->", affected);
+
+      return affected >= 1;
+    } catch (error) {
+      console.log("ERROR ----------->", error);
       throw new InternalServerErrorException(error);
     }
   }
