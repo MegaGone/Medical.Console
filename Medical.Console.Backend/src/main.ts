@@ -1,13 +1,15 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "./app.module";
+import { ValidationPipe } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
+
   const config = await app.get<ConfigService>(ConfigService);
 
-  app.setGlobalPrefix("api")
+  app.setGlobalPrefix("api");
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -15,7 +17,7 @@ async function bootstrap() {
         enableImplicitConversion: true,
       },
       whitelist: true,
-    })
+    }),
   );
 
   const port: number = await config.get<number>("global.port");
