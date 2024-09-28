@@ -33,6 +33,7 @@ export class NavigationMockApi {
         this.registerHandlers();
 
         this._defaultNavigation = JSON.parse(this._storage.find('navigation'));
+        console.log(this._defaultNavigation);
     }
 
     // -----------------------------------------------------------------------------------------------------
