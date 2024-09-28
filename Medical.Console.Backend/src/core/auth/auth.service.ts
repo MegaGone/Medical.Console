@@ -16,7 +16,7 @@ export class AuthService {
         where: {
           email,
         },
-        select: ["id", "isEnabled", "password", "role"],
+        select: ["id", "isEnabled", "password", "role", "displayName", "email"],
       });
 
       return record;
@@ -36,8 +36,6 @@ export class AuthService {
           password,
         },
       );
-
-      console.log("AFFECTED ---------->", affected);
 
       return affected >= 1;
     } catch (error) {

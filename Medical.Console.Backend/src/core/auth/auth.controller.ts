@@ -11,6 +11,7 @@ import {
   Post,
 } from "@nestjs/common";
 import { Public } from "./decorators";
+import { getMenuByRole } from "src/helpers";
 
 @Public()
 @Controller("auth")
@@ -36,8 +37,16 @@ export class AuthController {
       role: user.role,
     };
 
+    const userData = {
+      id: user?.id,
+      name: user?.displayName,
+      email: user?.email,
+    };
+
     return {
       token: await this._jwt.signAsync(payload),
+      user: userData,
+      menu: getMenuByRole(user?.role),
     };
   }
 
