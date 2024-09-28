@@ -4,6 +4,16 @@ Medical.Console.Backend/node_modules
 Medical.Console.Backend/build
 Medical.Console.Backend/.env
 
+Medical.Console.Frontend/dist
+Medical.Console.Frontend/tmp
+Medical.Console.Frontend/out-tsc
+Medical.Console.Frontend/bazel-out
+
+# Node
+Medical.Console.Frontend/node_modules
+Medical.Console.Frontend/npm-debug.log
+Medical.Console.Frontend/yarn-error.log
+
 # Logs
 logs
 *.log
