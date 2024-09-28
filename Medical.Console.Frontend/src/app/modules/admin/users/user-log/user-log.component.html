@@ -1,0 +1,83 @@
+<ng-container>
+    <div class="grid">
+        <!-- Header -->
+        <div
+            matSort
+            matSortDisableClear
+            class="inventory-user-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+        >
+            <div [mat-sort-header]="'name'">Nombre</div>
+            <div class="hidden sm:block">Email</div>
+            <div class="hidden lg:block">Rol</div>
+            <div class="hidden sm:block">Estado</div>
+            <div class="hidden sm:block">Opciones</div>
+        </div>
+        <!-- Header -->
+    </div>
+
+    <ng-container *ngIf="users$ | async as users">
+        <ng-container *ngFor="let user of users; trackBy: trackByFn">
+            <div
+                class="inventory-user-grid inventory-user-row-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b"
+            >
+                <!-- DISPLAYNAME -->
+                <div class="truncate">
+                    {{ user?.displayName }}
+                </div>
+                <!-- /DISPLAYNAME -->
+
+                <!-- EMAIL -->
+                <div class="truncate">
+                    {{ user?.email }}
+                </div>
+                <!-- /EMAIL -->
+
+                <!-- ROLE -->
+                <div class="truncate">
+                    {{ translateRole(user?.role) }}
+                </div>
+                <!-- /ROLE -->
+
+                <!-- STATUS -->
+                <div class="truncate">
+                    <mat-icon
+                        style="color: red"
+                        *ngIf="!user?.isEnabled"
+                        [matTooltip]="'Inhabilitado'"
+                        svgIcon="heroicons_outline:x-circle"
+                    ></mat-icon>
+
+                    <mat-icon
+                        style="color: green"
+                        *ngIf="user?.isEnabled"
+                        [matTooltip]="'Habilitado'"
+                        svgIcon="heroicons_outline:check-circle"
+                    ></mat-icon>
+                </div>
+                <!-- /STATUS -->
+
+                <!-- OPTIONS -->
+                <div class="truncate">
+                    <button
+                        mat-stroked-button
+                        [matTooltip]="'Editar usuario'"
+                        class="min-w-10 min-h-7 h-7 px-2 leading-6"
+                    >
+                        <mat-icon
+                            svgIcon="heroicons_outline:pencil-alt"
+                        ></mat-icon>
+                    </button>
+                </div>
+                <!-- /OPTIONS -->
+            </div>
+        </ng-container>
+    </ng-container>
+
+    <mat-paginator
+        [length]="count"
+        [pageSizeOptions]="pageSizeOptions"
+        [ngClass]="{ 'pointer-events-none': loading }"
+        class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+    >
+    </mat-paginator>
+</ng-container>
