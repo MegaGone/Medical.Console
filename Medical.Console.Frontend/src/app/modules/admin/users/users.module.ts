@@ -19,9 +19,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule } from '@angular/material/dialog';
+import { UserDetailComponent } from './user-detail/user-detail.component';
 
 @NgModule({
-    declarations: [UsersComponent, UserLogComponent],
+    declarations: [UsersComponent, UserLogComponent, UserDetailComponent],
     imports: [
         SharedModule,
         UsersRoutingModule,

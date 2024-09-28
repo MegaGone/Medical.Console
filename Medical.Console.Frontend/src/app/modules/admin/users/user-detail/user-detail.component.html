@@ -1,0 +1,126 @@
+<h2 *ngIf="data" mat-dialog-title>Editar usuario</h2>
+<h2 *ngIf="!data" mat-dialog-title>Datos de usuario</h2>
+
+<form name="Form" [formGroup]="Form">
+    <mat-form-field>
+        <input
+            matInput
+            placeholder="Nombre"
+            formControlName="firstName"
+            (keydown)="onKeyDown($event)"
+        />
+        <mat-error
+            *ngIf="
+                Form.get('firstName').invalid && Form.get('firstName').touched
+            "
+        >
+            Este campo es requerido.
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <input
+            matInput
+            placeholder="Apellido"
+            formControlName="lastName"
+            (keydown)="onKeyDown($event)"
+        />
+        <mat-error
+            *ngIf="Form.get('lastName').invalid && Form.get('lastName').touched"
+        >
+            Este campo es requerido.
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <input
+            matInput
+            placeholder="Nombre de usuario"
+            formControlName="displayName"
+        />
+        <mat-error
+            *ngIf="
+                Form.get('displayName').invalid &&
+                Form.get('displayName').touched
+            "
+        >
+            Este campo es requerido.
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-select placeholder="Rol" formControlName="role">
+            <mat-option *ngFor="let role of roles" [value]="role.value">{{
+                role.key
+            }}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="Form.get('role').invalid && Form.get('role').touched">
+            Este campo es requerido.
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <input
+            matInput
+            placeholder="Email"
+            formControlName="email"
+            (keydown)="onKeyDown($event)"
+        />
+        <mat-error
+            *ngIf="Form.get('email').invalid && Form.get('email').touched"
+        >
+            Este campo es requerido y debe ser un correo electrónico válido.
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <input
+            matInput
+            type="password"
+            placeholder="Contraseña"
+            formControlName="password"
+        />
+        <mat-error
+            *ngIf="Form.get('password').invalid && Form.get('password').touched"
+        >
+            Este campo es requerido.
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-select placeholder="Estado" formControlName="isEnabled">
+            <mat-option *ngFor="let state of states" [value]="state.value">{{
+                state.key
+            }}</mat-option>
+        </mat-select>
+        <mat-error
+            *ngIf="
+                Form.get('isEnabled').invalid && Form.get('isEnabled').touched
+            "
+        >
+            Este campo es requerido.
+        </mat-error>
+    </mat-form-field>
+
+    <div mat-dialog-actions>
+        <button mat-button type="button" (click)="onCancel()">Cancelar</button>
+        <button
+            *ngIf="!data"
+            mat-flat-button
+            [color]="'primary'"
+            (click)="onCreateUser()"
+            [disabled]="Form.invalid || Form.pristine"
+        >
+            Crear usuario
+        </button>
+        <button
+            *ngIf="data"
+            mat-flat-button
+            [color]="'primary'"
+            (click)="onEditUser()"
+            [disabled]="Form.invalid || Form.pristine"
+        >
+            Actualizar usuario
+        </button>
+    </div>
+</form>

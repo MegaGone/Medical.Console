@@ -16,6 +16,8 @@ import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { ROLE_ENUM } from 'app/enum';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatDialog } from '@angular/material/dialog';
+import { UserDetailComponent } from '../user-detail/user-detail.component';
 
 @Component({
     selector: 'user-log',
@@ -42,6 +44,7 @@ export class UserLogComponent implements OnInit, OnDestroy, AfterViewInit {
     public pageSizeOptions: number[];
 
     constructor(
+        public readonly _dialog: MatDialog,
         private readonly _service: UsersService,
         private readonly _changeDetectorRef: ChangeDetectorRef
     ) {
@@ -58,6 +61,7 @@ export class UserLogComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnInit(): void {
         this._findUsers();
+        this._onListenDialog();
     }
 
     ngOnDestroy(): void {
@@ -110,6 +114,48 @@ export class UserLogComponent implements OnInit, OnDestroy, AfterViewInit {
             );
 
         this.users$ = this._service.users$;
+    }
+
+    private _onListenDialog(): void {
+        this._service.dialog$
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((res) => {
+                console.log('RES -------------->', res);
+                this._findUsers(
+                    this.paginator.pageIndex + 1,
+                    this.paginator.pageSize
+                );
+            });
+    }
+
+    public deleteUser(id: number): void {
+        this._service
+            .deleteUser(id)
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((res) => {
+                if (res) {
+                    this._findUsers(
+                        this.paginator.pageIndex + 1,
+                        this.paginator.pageSize
+                    );
+                }
+            });
+    }
+
+    public openDialog(user: IUser) {
+        const dialogRef = this._dialog.open(UserDetailComponent, {
+            width: '500px',
+            data: user,
+        });
+        dialogRef
+            .afterClosed()
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((result) => {
+                this._findUsers(
+                    this.paginator.pageIndex + 1,
+                    this.paginator.pageSize
+                );
+            });
     }
 
     public translateRole(role: number): string {

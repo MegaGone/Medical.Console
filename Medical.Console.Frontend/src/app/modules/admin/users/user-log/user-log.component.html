@@ -42,14 +42,14 @@
                 <div class="truncate">
                     <mat-icon
                         style="color: red"
-                        *ngIf="!user?.isEnabled"
+                        *ngIf="+user?.isEnabled === 0"
                         [matTooltip]="'Inhabilitado'"
                         svgIcon="heroicons_outline:x-circle"
                     ></mat-icon>
 
                     <mat-icon
                         style="color: green"
-                        *ngIf="user?.isEnabled"
+                        *ngIf="+user?.isEnabled === 1"
                         [matTooltip]="'Habilitado'"
                         svgIcon="heroicons_outline:check-circle"
                     ></mat-icon>
@@ -61,10 +61,22 @@
                     <button
                         mat-stroked-button
                         [matTooltip]="'Editar usuario'"
+                        (click)="openDialog(user)"
                         class="min-w-10 min-h-7 h-7 px-2 leading-6"
                     >
                         <mat-icon
                             svgIcon="heroicons_outline:pencil-alt"
+                        ></mat-icon>
+                    </button>
+
+                    <button
+                        mat-stroked-button
+                        (click)="deleteUser(user.id)"
+                        [matTooltip]="'Inhabilitar usuario'"
+                        class="min-w-10 min-h-7 h-7 px-2 leading-6 ml-2"
+                    >
+                        <mat-icon
+                            svgIcon="heroicons_outline:user-remove"
                         ></mat-icon>
                     </button>
                 </div>

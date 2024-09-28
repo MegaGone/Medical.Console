@@ -13,3 +13,15 @@ export interface IFindUsersPaginated {
     count: number;
     data: Array<IUser>;
 }
+
+export interface ICreateUserResponse {
+    stored: boolean;
+}
+
+export interface IEditUserResponse {
+    updated: boolean;
+}
+
+export interface IDeleteUserResponse {
+    deleted: boolean;
+}
