@@ -74,6 +74,39 @@ export class AuthUtils {
     //     console.error(error);
     // }
 
+    static isTokenExpiringSoon(
+        token: string,
+        thresholdSeconds: number = 300
+    ): boolean {
+        try {
+            // Verifica si el token está vacío
+            if (!token) {
+                return false;
+            }
+
+            // Obtiene la fecha de expiración del token
+            const expirationDate = this._getTokenExpirationDateV2(token);
+
+            // Si no se pudo obtener la fecha, no se considera que está a punto de expirar
+            if (!expirationDate) {
+                return false;
+            }
+
+            // Calcula el tiempo restante hasta la expiración
+            const timeUntilExpiration =
+                expirationDate.getTime() - new Date().getTime();
+
+            // Verifica si el tiempo restante es menor al umbral (5 minutos por defecto)
+            return timeUntilExpiration <= thresholdSeconds * 1000;
+        } catch (error) {
+            console.error(
+                'Error al verificar si el token está a punto de expirar:',
+                error
+            );
+            return false;
+        }
+    }
+
     // -----------------------------------------------------------------------------------------------------
     // @ Private methods
     // -----------------------------------------------------------------------------------------------------
