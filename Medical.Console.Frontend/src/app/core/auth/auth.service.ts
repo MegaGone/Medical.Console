@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
+import { StorageService } from '../util';
 import { AuthUtils } from 'app/core/auth/auth.utils';
-import { UserService } from 'app/core/user/user.service';
+import { catchError, switchMap } from 'rxjs/operators';
 import { environment } from 'environments/environment';
+import { UserService } from 'app/core/user/user.service';
 const API_URL = environment.API_URL;
 
 @Injectable()
@@ -16,7 +17,8 @@ export class AuthService {
      */
     constructor(
         private _httpClient: HttpClient,
-        private _userService: UserService
+        private _userService: UserService,
+        private readonly _storage: StorageService
     ) {}
 
     // -----------------------------------------------------------------------------------------------------
@@ -75,9 +77,13 @@ export class AuthService {
                 // Set the authenticated flag to true
                 this._authenticated = true;
 
-                console.log('RESPONSE --------->', response);
                 // Store the user on the user service
                 this._userService.user = response.user;
+
+                this._storage.store(
+                    'navigation',
+                    JSON.stringify(response?.menu)
+                );
 
                 // Return a new observable with the response
                 return of(response);
@@ -136,6 +142,8 @@ export class AuthService {
     signOut(): Observable<any> {
         // Remove the access token from the local storage
         localStorage.removeItem('accessToken');
+        localStorage.removeItem('navigation');
+        localStorage.removeItem('user');
 
         // Set the authenticated flag to false
         this._authenticated = false;
