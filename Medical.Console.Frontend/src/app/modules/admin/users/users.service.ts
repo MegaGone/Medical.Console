@@ -29,7 +29,6 @@ export class UsersService {
     }
 
     dialogOpened() {
-        console.log('ABIERTO ------>');
         this._dialog.next();
     }
 

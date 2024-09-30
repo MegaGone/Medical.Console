@@ -8,15 +8,16 @@ import {
     AfterViewInit,
     ChangeDetectorRef,
 } from '@angular/core';
-import { fuseAnimations } from '@fuse/animations';
-import { UsersService } from '../users.service';
 import { IUser } from 'app/interfaces';
-import { merge, Observable, Subject } from 'rxjs';
-import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { ROLE_ENUM } from 'app/enum';
+import { UsersService } from '../users.service';
+import { SnackbarService } from 'app/core/util';
 import { MatSort } from '@angular/material/sort';
-import { MatPaginator } from '@angular/material/paginator';
+import { merge, Observable, Subject } from 'rxjs';
+import { fuseAnimations } from '@fuse/animations';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { UserDetailComponent } from '../user-detail/user-detail.component';
 
 @Component({
@@ -46,6 +47,7 @@ export class UserLogComponent implements OnInit, OnDestroy, AfterViewInit {
     constructor(
         public readonly _dialog: MatDialog,
         private readonly _service: UsersService,
+        private readonly _snackbar: SnackbarService,
         private readonly _changeDetectorRef: ChangeDetectorRef
     ) {
         this.users = [];
@@ -107,7 +109,11 @@ export class UserLogComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.users = res?.data;
                     this.count = res?.count;
                 },
-                () => {},
+                () => {
+                    this._snackbar.open(
+                        'Ha ocurrido un error al obtener los usuarios.'
+                    );
+                },
                 () => {
                     this.loading = false;
                 }
@@ -120,7 +126,6 @@ export class UserLogComponent implements OnInit, OnDestroy, AfterViewInit {
         this._service.dialog$
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((res) => {
-                console.log('RES -------------->', res);
                 this._findUsers(
                     this.paginator.pageIndex + 1,
                     this.paginator.pageSize
@@ -133,6 +138,12 @@ export class UserLogComponent implements OnInit, OnDestroy, AfterViewInit {
             .deleteUser(id)
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((res) => {
+                const message: string = !res
+                    ? 'Ha ocurrido un error al inhabilitar el usuario.'
+                    : 'Se ha inhabilitado el usuario de manera exitósa.';
+
+                this._snackbar.open(message);
+
                 if (res) {
                     this._findUsers(
                         this.paginator.pageIndex + 1,

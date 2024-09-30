@@ -39,7 +39,6 @@ export class AuthService {
 
       return affected >= 1;
     } catch (error) {
-      console.log("ERROR ----------->", error);
       throw new InternalServerErrorException(error);
     }
   }

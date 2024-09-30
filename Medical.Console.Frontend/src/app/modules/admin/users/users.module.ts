@@ -20,6 +20,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule } from '@angular/material/dialog';
 import { UserDetailComponent } from './user-detail/user-detail.component';
+import { SnackbarService } from 'app/core/util';
 
 @NgModule({
     declarations: [UsersComponent, UserLogComponent, UserDetailComponent],
@@ -42,5 +43,6 @@ import { UserDetailComponent } from './user-detail/user-detail.component';
         MatSlideToggleModule,
         MatSlideToggleModule,
     ],
+    // providers: [SnackbarService],
 })
 export class UsersModule {}

@@ -9,6 +9,7 @@ import {
     horizontalNavigation,
 } from 'app/mock-api/common/navigation/data';
 import { StorageService } from 'app/core/util';
+import { AuthService } from 'app/core/auth/auth.service';
 
 @Injectable({
     providedIn: 'root',
@@ -27,13 +28,15 @@ export class NavigationMockApi {
      */
     constructor(
         private _fuseMockApiService: FuseMockApiService,
-        private readonly _storage: StorageService
+        private readonly _storage: StorageService,
+        private readonly _auth: AuthService
     ) {
         // Register Mock API handlers
         this.registerHandlers();
 
         this._defaultNavigation = JSON.parse(this._storage.find('navigation'));
-        console.log(this._defaultNavigation);
+        if (!this._defaultNavigation || !this._defaultNavigation?.length)
+            this._auth.signOut();
     }
 
     // -----------------------------------------------------------------------------------------------------

@@ -6,6 +6,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { UsersService } from '../users.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { SnackbarService } from 'app/core/util';
 
 @Component({
     selector: 'app-user-detail',
@@ -23,6 +24,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
         private readonly _fb: FormBuilder,
         private readonly _service: UsersService,
         @Inject(MAT_DIALOG_DATA) public data: IUser,
+        private readonly _snackbar: SnackbarService,
         private readonly dialogRef: MatDialogRef<UserDetailComponent>
     ) {
         this.roles = [...ROLES];
@@ -74,6 +76,11 @@ export class UserDetailComponent implements OnInit, OnDestroy {
             .createUser(this.Form.getRawValue())
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((res) => {
+                const message: string = !res
+                    ? 'Ha ocurrido un error al crear el usuario.'
+                    : 'El usuario se ha creado exitósamente.';
+
+                this._snackbar.open(message);
                 if (res) this.onCancel();
             });
     }
@@ -90,6 +97,11 @@ export class UserDetailComponent implements OnInit, OnDestroy {
             .updateUser(user)
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((res) => {
+                const message: string = !res
+                    ? 'Ha ocurrido un error al actualizar el usuario.'
+                    : 'El usuario se ha actualizado exitósamente.';
+
+                this._snackbar.open(message);
                 if (res) this.onCancel();
             });
     }
