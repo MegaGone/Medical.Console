@@ -68,16 +68,11 @@ export class AuthSignInComponent implements OnInit {
 
         // Sign in
         this._authService.signIn(this.signInForm.value).subscribe(
-            () => {
-                // Set the redirect url.
-                // The '/signed-in-redirect' is a dummy url to catch the request and redirect the user
-                // to the correct page after a successful sign in. This way, that url can be set via
-                // routing file and we don't have to touch here.
-                // TODO: REDIRECT BASED ON ROLE
-                const redirectURL = '/administrador/usuarios';
-
-                // Navigate to the redirect url
-                this._router.navigateByUrl(redirectURL);
+            (res) => {
+                if (res && res?.menu) {
+                    const main: string = res.menu[0].children[0].link;
+                    return this._router.navigate([main]);
+                }
             },
             (response) => {
                 // Re-enable the form
