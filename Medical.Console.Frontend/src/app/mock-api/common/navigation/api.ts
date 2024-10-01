@@ -17,7 +17,7 @@ import { AuthService } from 'app/core/auth/auth.service';
 export class NavigationMockApi {
     private readonly _compactNavigation: FuseNavigationItem[] =
         compactNavigation;
-    private readonly _defaultNavigation: FuseNavigationItem[];
+    private _defaultNavigation: FuseNavigationItem[];
     private readonly _futuristicNavigation: FuseNavigationItem[] =
         futuristicNavigation;
     private readonly _horizontalNavigation: FuseNavigationItem[] =
@@ -33,10 +33,6 @@ export class NavigationMockApi {
     ) {
         // Register Mock API handlers
         this.registerHandlers();
-
-        this._defaultNavigation = JSON.parse(this._storage.find('navigation'));
-        if (!this._defaultNavigation || !this._defaultNavigation?.length)
-            this._auth.signOut();
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -51,40 +47,13 @@ export class NavigationMockApi {
         // @ Navigation - GET
         // -----------------------------------------------------------------------------------------------------
         this._fuseMockApiService.onGet('api/common/navigation').reply(() => {
-            // Fill compact navigation children using the default navigation
-            this._compactNavigation.forEach((compactNavItem) => {
-                this._defaultNavigation.forEach((defaultNavItem) => {
-                    if (defaultNavItem.id === compactNavItem.id) {
-                        compactNavItem.children = cloneDeep(
-                            defaultNavItem.children
-                        );
-                    }
-                });
-            });
+            this._defaultNavigation = JSON.parse(
+                this._storage.find('navigation')
+            );
 
-            // Fill futuristic navigation children using the default navigation
-            this._futuristicNavigation.forEach((futuristicNavItem) => {
-                this._defaultNavigation.forEach((defaultNavItem) => {
-                    if (defaultNavItem.id === futuristicNavItem.id) {
-                        futuristicNavItem.children = cloneDeep(
-                            defaultNavItem.children
-                        );
-                    }
-                });
-            });
+            if (!this._defaultNavigation || !this._defaultNavigation?.length)
+                this._auth.signOut();
 
-            // Fill horizontal navigation children using the default navigation
-            this._horizontalNavigation.forEach((horizontalNavItem) => {
-                this._defaultNavigation.forEach((defaultNavItem) => {
-                    if (defaultNavItem.id === horizontalNavItem.id) {
-                        horizontalNavItem.children = cloneDeep(
-                            defaultNavItem.children
-                        );
-                    }
-                });
-            });
-
-            // Return the response
             return [
                 200,
                 {

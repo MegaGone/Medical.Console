@@ -12,7 +12,7 @@ export class NavigationUtilService {
             this._get('navigation')
         );
 
-        if (!navigation || !navigation?.length) return '/';
+        if (!navigation || !navigation?.length) return '/sign-in';
 
         return navigation[0]?.children[0]?.link;
     }
