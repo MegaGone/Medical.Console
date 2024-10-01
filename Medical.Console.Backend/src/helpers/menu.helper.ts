@@ -25,15 +25,15 @@ export const getMenuByRole = (role: number): Array<IFuseNavigationItem> => {
     case ROLE_ENUM.DOCTOR:
       menu.push({
         id: "apps.doctor",
-        title: "Administración",
+        title: "Médico",
         type: "collapsable",
         icon: "heroicons_outline:clipboard-check",
         children: [
           {
             id: "apps.doctor.users",
-            title: "Usuarios",
+            title: "Pacientes",
             type: "basic",
-            link: "/doctor/usuarios",
+            link: "/doctor/pacientes",
           },
         ],
       });
