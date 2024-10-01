@@ -3,25 +3,13 @@ import { AuthGuard } from 'app/core/auth/guards/auth.guard';
 import { NoAuthGuard } from 'app/core/auth/guards/noAuth.guard';
 import { LayoutComponent } from 'app/layout/layout.component';
 import { InitialDataResolver } from 'app/app.resolvers';
+import { NavigationUtilService } from './core/util';
+
+const main: string = NavigationUtilService.main();
 
 // @formatter:off
 // tslint:disable:max-line-length
 export const appRoutes: Route[] = [
-    // Redirect empty path to '/example'
-    { path: '', pathMatch: 'full', redirectTo: 'administrador/usuarios' },
-
-    // Redirect signed in user to the '/example'
-    //
-    // After the user signs in, the sign in page will redirect the user to the 'signed-in-redirect'
-    // path. Below is another redirection for that path to redirect the user to the desired
-    // location. This is a small convenience to keep all main routes together here on this file.
-    {
-        pathMatch: 'full',
-        path: 'signed-in-redirect',
-        redirectTo: 'administrador/usuarios',
-    },
-
-    // Auth routes for guests
     {
         path: '',
         canActivate: [NoAuthGuard],
@@ -46,16 +34,6 @@ export const appRoutes: Route[] = [
                     ),
             },
         ],
-    },
-    {
-        path: '',
-        canActivate: [AuthGuard],
-        canActivateChild: [AuthGuard],
-        component: LayoutComponent,
-        data: {
-            layout: 'empty',
-        },
-        children: [],
     },
     {
         path: 'administrador',
@@ -85,12 +63,14 @@ export const appRoutes: Route[] = [
         },
         children: [
             {
-                path: 'usuarios',
+                path: 'pacientes',
                 loadChildren: () =>
-                    import('app/modules/admin/users/users.module').then(
-                        (m) => m.UsersModule
+                    import('app/modules/doctor/patients/patients.module').then(
+                        (m) => m.PatientsModule
                     ),
             },
         ],
     },
+    { path: '', pathMatch: 'full', redirectTo: `${main}` },
+    { path: '**', pathMatch: 'full', redirectTo: `${main}` },
 ];
