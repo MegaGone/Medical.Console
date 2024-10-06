@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { UsersComponent } from './users.component';
 import { UsersRoutingModule } from './users-routing.module';
 import { UserLogComponent } from './user-log/user-log.component';
+import { UserDetailComponent } from './user-detail/user-detail.component';
 
 import { SharedModule } from 'app/shared/shared.module';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,8 +20,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule } from '@angular/material/dialog';
-import { UserDetailComponent } from './user-detail/user-detail.component';
-import { SnackbarService } from 'app/core/util';
 
 @NgModule({
     declarations: [UsersComponent, UserLogComponent, UserDetailComponent],
@@ -43,6 +42,5 @@ import { SnackbarService } from 'app/core/util';
         MatSlideToggleModule,
         MatSlideToggleModule,
     ],
-    // providers: [SnackbarService],
 })
 export class UsersModule {}

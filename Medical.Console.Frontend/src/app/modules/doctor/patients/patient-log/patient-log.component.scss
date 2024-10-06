@@ -1,0 +1,19 @@
+.inventory-patient-grid {
+    grid-template-columns: auto 40px;
+
+    @screen sm {
+        grid-template-columns: 295px 236px 150px 72px;
+    }
+
+    @screen md {
+        grid-template-columns: 112px auto 112px 72px;
+    }
+
+    @screen lg {
+        grid-template-columns: 349px auto 112px 180px;
+    }
+}
+
+.inventory-patient-row-grid {
+    height: 70px;
+}

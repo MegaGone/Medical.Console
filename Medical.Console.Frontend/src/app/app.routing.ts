@@ -10,6 +10,7 @@ const main: string = NavigationUtilService.main();
 // @formatter:off
 // tslint:disable:max-line-length
 export const appRoutes: Route[] = [
+    { path: '', pathMatch: 'full', redirectTo: `${main}` },
     {
         path: '',
         canActivate: [NoAuthGuard],
@@ -71,6 +72,5 @@ export const appRoutes: Route[] = [
             },
         ],
     },
-    { path: '', pathMatch: 'full', redirectTo: `${main}` },
     { path: '**', pathMatch: 'full', redirectTo: `${main}` },
 ];
