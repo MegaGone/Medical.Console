@@ -2,11 +2,9 @@ import { ROLE_ENUM } from "src/core/auth/enums";
 import { IFuseNavigationItem } from "src/interfaces";
 
 export const getMenuByRole = (role: number): Array<IFuseNavigationItem> => {
-  const menu: Array<IFuseNavigationItem> = [];
-
-  switch (role) {
-    case ROLE_ENUM.ADMIN:
-      menu.push({
+  const menuConfig: { [key: number]: IFuseNavigationItem[] } = {
+    [ROLE_ENUM.ADMIN]: [
+      {
         id: "apps.administrador",
         title: "Administración",
         type: "collapsable",
@@ -19,11 +17,24 @@ export const getMenuByRole = (role: number): Array<IFuseNavigationItem> => {
             link: "/administrador/usuarios",
           },
         ],
-      });
-      break;
-
-    case ROLE_ENUM.DOCTOR:
-      menu.push({
+      },
+      {
+        id: "apps.doctor",
+        title: "Médico",
+        type: "collapsable",
+        icon: "heroicons_outline:clipboard-check",
+        children: [
+          {
+            id: "apps.doctor.medicament",
+            title: "Medicamentos",
+            type: "basic",
+            link: "/administrador/medicamentos",
+          },
+        ],
+      },
+    ],
+    [ROLE_ENUM.DOCTOR]: [
+      {
         id: "apps.doctor",
         title: "Médico",
         type: "collapsable",
@@ -35,13 +46,17 @@ export const getMenuByRole = (role: number): Array<IFuseNavigationItem> => {
             type: "basic",
             link: "/doctor/pacientes",
           },
+          {
+            id: "apps.doctor.medicament",
+            title: "Medicamentos",
+            type: "basic",
+            link: "/doctor/medicamentos",
+          },
         ],
-      });
-      break;
+      },
+    ],
+    [ROLE_ENUM.PATIENT]: [],
+  };
 
-    case ROLE_ENUM.PATIENT:
-      break;
-  }
-
-  return menu;
+  return menuConfig[role] || [];
 };

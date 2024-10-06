@@ -52,6 +52,13 @@ export const appRoutes: Route[] = [
                         (m) => m.UsersModule
                     ),
             },
+            {
+                path: 'medicamentos',
+                loadChildren: () =>
+                    import(
+                        'app/modules/doctor/medicaments/medicaments.module'
+                    ).then((m) => m.MedicamentsModule),
+            },
         ],
     },
     {
@@ -69,6 +76,13 @@ export const appRoutes: Route[] = [
                     import('app/modules/doctor/patients/patients.module').then(
                         (m) => m.PatientsModule
                     ),
+            },
+            {
+                path: 'medicamentos',
+                loadChildren: () =>
+                    import(
+                        'app/modules/doctor/medicaments/medicaments.module'
+                    ).then((m) => m.MedicamentsModule),
             },
         ],
     },
