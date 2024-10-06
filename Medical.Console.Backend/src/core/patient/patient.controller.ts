@@ -58,8 +58,12 @@ export class PatientController {
 
   @Put("/update")
   public async update(@Body() updatePatientDto: UpdatePatientDto) {
-    const { id, ...body } = updatePatientDto;
-    const updated = await this._service.update(id, body);
+    const { id, password, ...body } = updatePatientDto;
+
+    const updated = await this._service.update(id, {
+      ...body,
+      password: password ? await BcryptService.hash(password) : undefined,
+    });
     return { updated };
   }
 

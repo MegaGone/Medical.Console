@@ -55,8 +55,12 @@ export class UserController {
 
   @Put("/update")
   public async update(@Body() updateUserDto: UpdateUserDto) {
-    const { id, ...body } = updateUserDto;
-    const updated = await this._service.update(id, body);
+    const { id, password, ...body } = updateUserDto;
+
+    const updated = await this._service.update(id, {
+      ...body,
+      password: password ? await BcryptService.hash(password) : undefined,
+    });
     return { updated };
   }
 

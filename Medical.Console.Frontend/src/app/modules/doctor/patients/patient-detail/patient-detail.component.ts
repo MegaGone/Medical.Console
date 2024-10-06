@@ -81,7 +81,7 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
                 c.markAsTouched()
             );
 
-        const { password, ...user } = this.Form.getRawValue();
+        const { ...user } = this.Form.getRawValue();
 
         this._service
             .updatePatient(user)

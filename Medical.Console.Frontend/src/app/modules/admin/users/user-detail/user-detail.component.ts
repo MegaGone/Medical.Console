@@ -91,7 +91,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
                 c.markAsTouched()
             );
 
-        const { password, ...user } = this.Form.getRawValue();
+        const { ...user } = this.Form.getRawValue();
 
         this._service
             .updateUser(user)
