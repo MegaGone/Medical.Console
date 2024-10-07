@@ -1,9 +1,14 @@
 import { Transform } from "class-transformer";
 import { IsNotEmpty, IsNumber } from "class-validator";
 
-export class DeleteUserDto {
+export class FindMedicinesPaginatedDto {
   @IsNumber()
   @IsNotEmpty()
   @Transform(({ value }) => parseInt(value))
-  id: number;
+  page: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  @Transform(({ value }) => parseInt(value))
+  pageSize: number;
 }

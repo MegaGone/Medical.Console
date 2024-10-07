@@ -6,6 +6,8 @@ import { UserModule } from './core/user/user.module';
 import { AuthModule } from './core/auth/auth.module';
 import { SharedModule } from './core/shared/shared.module';
 import { PatientModule } from './core/patient/patient.module';
+import { MedicineModule } from './core/medicine/medicine.module';
+import { VaccineModule } from './core/vaccine/vaccine.module';
 
 import Config from './configuration/global.configuration';
 import DBConfig from './configuration/database.configuration';
@@ -20,6 +22,8 @@ import DBConfig from './configuration/database.configuration';
     AuthModule,
     SharedModule,
     PatientModule,
+    MedicineModule,
+    VaccineModule,
   ],
   controllers: [],
   providers: [],

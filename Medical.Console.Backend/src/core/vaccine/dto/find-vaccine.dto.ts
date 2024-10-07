@@ -1,9 +1,9 @@
 import { Transform } from "class-transformer";
 import { IsNotEmpty, IsNumber } from "class-validator";
 
-export class DeleteUserDto {
+export class FindVaccineDto {
   @IsNumber()
   @IsNotEmpty()
   @Transform(({ value }) => parseInt(value))
-  id: number;
+  readonly id: number;
 }
