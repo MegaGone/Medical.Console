@@ -1,0 +1,94 @@
+<h2 *ngIf="data" mat-dialog-title>Editar medicamento</h2>
+<h2 *ngIf="!data" mat-dialog-title>Datos de medicamento</h2>
+
+<form name="Form" [formGroup]="Form">
+    <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Medicamento</mat-label>
+        <input matInput formControlName="name" />
+        <mat-error *ngIf="Form.get('name').invalid && Form.get('name').touched">
+            Este campo es requerido.
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Dósis</mat-label>
+        <input matInput formControlName="dosage" />
+        <mat-error
+            *ngIf="Form.get('dosage').invalid && Form.get('dosage').touched"
+        >
+            Este campo es requerido.
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Efectos secundarios</mat-label>
+        <textarea
+            matInput
+            [matTextareaAutosize]="true"
+            formControlName="sideEffects"
+        ></textarea>
+        <mat-error
+            *ngIf="
+                Form.get('sideEffects').invalid &&
+                Form.get('sideEffects').touched
+            "
+        >
+            Este campo es requerido.
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Descripción</mat-label>
+        <textarea
+            matInput
+            [matTextareaAutosize]="true"
+            formControlName="description"
+        ></textarea>
+        <mat-error
+            *ngIf="
+                Form.get('description').invalid &&
+                Form.get('description').touched
+            "
+        >
+            Este campo es requerido.
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field *ngIf="data" appearance="outline" floatLabel="always">
+        <mat-label>Estado</mat-label>
+        <mat-select formControlName="isEnabled">
+            <mat-option *ngFor="let state of states" [value]="state.value">{{
+                state.key
+            }}</mat-option>
+        </mat-select>
+        <mat-error
+            *ngIf="
+                Form.get('isEnabled').invalid && Form.get('isEnabled').touched
+            "
+        >
+            Este campo es requerido.
+        </mat-error>
+    </mat-form-field>
+
+    <div mat-dialog-actions>
+        <button mat-button type="button" (click)="onCancel()">Cancelar</button>
+        <button
+            *ngIf="!data"
+            mat-flat-button
+            [color]="'primary'"
+            (click)="onCreateMedicament()"
+            [disabled]="Form.invalid || Form.pristine"
+        >
+            Crear medicamento
+        </button>
+        <button
+            *ngIf="data"
+            mat-flat-button
+            [color]="'primary'"
+            (click)="onEditMedicament()"
+            [disabled]="Form.invalid || Form.pristine"
+        >
+            Actualizar medicamento
+        </button>
+    </div>
+</form>

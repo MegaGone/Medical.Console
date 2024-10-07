@@ -1,0 +1,19 @@
+.inventory-medicament-grid {
+    grid-template-columns: auto 40px;
+
+    @screen sm {
+        grid-template-columns: 295px 236px 200px 300px 150px 72px;
+    }
+
+    @screen md {
+        grid-template-columns: 112px auto 150px 250px 112px 72px;
+    }
+
+    @screen lg {
+        grid-template-columns: 349px auto 150px 250px 112px 180px;
+    }
+}
+
+.inventory-medicament-row-grid {
+    height: 70px;
+}

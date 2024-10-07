@@ -1,0 +1,104 @@
+<ng-container>
+    <div class="grid">
+        <!-- Header -->
+        <div
+            matSort
+            matSortDisableClear
+            class="inventory-medicament-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+        >
+            <div [mat-sort-header]="'name'">Medicamento</div>
+            <div class="hidden sm:block">Descripción</div>
+            <div class="hidden sm:block">Fecha de registro</div>
+            <div class="hidden sm:block">Dósis</div>
+            <div class="hidden sm:block">Estado</div>
+            <div class="hidden sm:block">Opciones</div>
+        </div>
+        <!-- Header -->
+    </div>
+
+    <ng-container *ngIf="medicaments$ | async as medicaments">
+        <ng-container
+            *ngFor="let medicament of medicaments; trackBy: trackByFn"
+        >
+            <div
+                class="inventory-medicament-grid inventory-medicament-row-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b"
+            >
+                <!-- NAME -->
+                <div class="truncate">
+                    {{ medicament?.name }}
+                </div>
+                <!-- /NAME -->
+
+                <!-- DESCRIPTION -->
+                <div class="truncate">
+                    {{ medicament?.description }}
+                </div>
+                <!-- /DESCRIPTION -->
+
+                <!-- CREATED DATE -->
+                <div class="truncate">
+                    {{ medicament?.createdAt | date : "dd/MM/yyyy" }}
+                </div>
+                <!-- /CREATED DATE -->
+
+                <!-- DOSAGE -->
+                <div class="truncate">
+                    {{ medicament?.dosage || "--" }}
+                </div>
+                <!-- /DOSAGE -->
+
+                <!-- STATUS -->
+                <div class="truncate">
+                    <mat-icon
+                        style="color: red"
+                        [matTooltip]="'Inhabilitado'"
+                        *ngIf="+medicament?.isEnabled === 0"
+                        svgIcon="heroicons_outline:x-circle"
+                    ></mat-icon>
+
+                    <mat-icon
+                        style="color: green"
+                        [matTooltip]="'Habilitado'"
+                        *ngIf="+medicament?.isEnabled === 1"
+                        svgIcon="heroicons_outline:check-circle"
+                    ></mat-icon>
+                </div>
+                <!-- /STATUS -->
+
+                <!-- OPTIONS -->
+                <div class="truncate">
+                    <button
+                        mat-stroked-button
+                        (click)="editMedicament(medicament)"
+                        [matTooltip]="'Editar medicamento'"
+                        class="min-w-10 min-h-7 h-7 px-2 leading-6"
+                    >
+                        <mat-icon
+                            svgIcon="heroicons_outline:pencil-alt"
+                        ></mat-icon>
+                    </button>
+
+                    <button
+                        mat-stroked-button
+                        (click)="deleteMedicament(medicament.id)"
+                        [matTooltip]="'Inhabilitar medicamento'"
+                        class="min-w-10 min-h-7 h-7 px-2 leading-6 ml-2"
+                    >
+                        <mat-icon
+                            svgIcon="heroicons_outline:user-remove"
+                        ></mat-icon>
+                    </button>
+                </div>
+                <!-- /OPTIONS -->
+            </div>
+        </ng-container>
+    </ng-container>
+
+    <mat-paginator
+        [length]="count"
+        [pageSizeOptions]="pageSizeOptions"
+        [ngClass]="{ 'pointer-events-none': loading }"
+        class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+    >
+    </mat-paginator>
+</ng-container>
