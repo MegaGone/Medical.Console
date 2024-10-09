@@ -1,0 +1,102 @@
+<ng-container>
+    <div class="grid">
+        <!-- Header -->
+        <div
+            matSort
+            matSortDisableClear
+            class="inventory-vaccine-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+        >
+            <div [mat-sort-header]="'name'">Vacuna</div>
+            <div class="hidden sm:block">Descripción</div>
+            <div class="hidden sm:block">Manufactura</div>
+            <div class="hidden sm:block">Horario de dósis</div>
+            <div class="hidden sm:block">Estado</div>
+            <div class="hidden sm:block">Opciones</div>
+        </div>
+        <!-- /Header -->
+    </div>
+
+    <ng-container *ngIf="vaccines$ | async as vaccines">
+        <ng-container *ngFor="let vaccine of vaccines; trackBy: trackByFn">
+            <div
+                class="inventory-vaccine-grid inventory-vaccine-row-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b"
+            >
+                <!-- NAME -->
+                <div class="truncate">
+                    {{ vaccine?.name }}
+                </div>
+                <!-- /NAME -->
+
+                <!-- DESCRIPTION -->
+                <div class="truncate">
+                    {{ vaccine?.description }}
+                </div>
+                <!-- /DESCRIPTION -->
+
+                <!-- MANUFACTURER -->
+                <div class="truncate">
+                    {{ vaccine?.manufacturer }}
+                </div>
+                <!-- /MANUFACTURER -->
+
+                <!-- DOSAGE -->
+                <div class="truncate">
+                    {{ vaccine?.doseSchedule || "--" }}
+                </div>
+                <!-- /DOSAGE -->
+
+                <!-- STATUS -->
+                <div class="truncate">
+                    <mat-icon
+                        style="color: red"
+                        [matTooltip]="'Inhabilitado'"
+                        *ngIf="+vaccine?.isEnabled === 0"
+                        svgIcon="heroicons_outline:x-circle"
+                    ></mat-icon>
+
+                    <mat-icon
+                        style="color: green"
+                        [matTooltip]="'Habilitado'"
+                        *ngIf="+vaccine?.isEnabled === 1"
+                        svgIcon="heroicons_outline:check-circle"
+                    ></mat-icon>
+                </div>
+                <!-- /STATUS -->
+
+                <!-- OPTIONS -->
+                <div class="truncate">
+                    <button
+                        mat-stroked-button
+                        (click)="editVaccine(vaccine)"
+                        [matTooltip]="'Editar vacunación'"
+                        class="min-w-10 min-h-7 h-7 px-2 leading-6"
+                    >
+                        <mat-icon
+                            svgIcon="heroicons_outline:pencil-alt"
+                        ></mat-icon>
+                    </button>
+
+                    <button
+                        mat-stroked-button
+                        (click)="deleteVaccine(vaccine.id)"
+                        [matTooltip]="'Inhabilitar vacunación'"
+                        class="min-w-10 min-h-7 h-7 px-2 leading-6 ml-2"
+                    >
+                        <mat-icon
+                            svgIcon="heroicons_outline:user-remove"
+                        ></mat-icon>
+                    </button>
+                </div>
+                <!-- /OPTIONS -->
+            </div>
+        </ng-container>
+    </ng-container>
+
+    <mat-paginator
+        [length]="count"
+        [pageSizeOptions]="pageSizeOptions"
+        [ngClass]="{ 'pointer-events-none': loading }"
+        class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+    >
+    </mat-paginator>
+</ng-container>

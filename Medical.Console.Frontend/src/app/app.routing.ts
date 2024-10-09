@@ -59,6 +59,13 @@ export const appRoutes: Route[] = [
                         'app/modules/doctor/medicaments/medicaments.module'
                     ).then((m) => m.MedicamentsModule),
             },
+            {
+                path: 'vacunaciones',
+                loadChildren: () =>
+                    import('app/modules/doctor/vaccines/vaccines.module').then(
+                        (m) => m.VaccinesModule
+                    ),
+            },
         ],
     },
     {
@@ -83,6 +90,13 @@ export const appRoutes: Route[] = [
                     import(
                         'app/modules/doctor/medicaments/medicaments.module'
                     ).then((m) => m.MedicamentsModule),
+            },
+            {
+                path: 'vacunaciones',
+                loadChildren: () =>
+                    import('app/modules/doctor/vaccines/vaccines.module').then(
+                        (m) => m.VaccinesModule
+                    ),
             },
         ],
     },

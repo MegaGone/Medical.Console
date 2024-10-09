@@ -1,41 +1,39 @@
+import { fuseAnimations } from '@fuse/animations';
 import {
     OnInit,
     Component,
-    ViewChild,
-    ChangeDetectorRef,
-    ViewEncapsulation,
-    ChangeDetectionStrategy,
-    AfterViewInit,
     OnDestroy,
+    ViewChild,
+    AfterViewInit,
+    ViewEncapsulation,
+    ChangeDetectorRef,
+    ChangeDetectionStrategy,
 } from '@angular/core';
-import { IMedicine } from 'app/interfaces';
+import { IVaccine } from 'app/interfaces';
 import { SnackbarService } from 'app/core/util';
 import { MatSort } from '@angular/material/sort';
 import { merge, Observable, Subject } from 'rxjs';
-import { fuseAnimations } from '@fuse/animations';
+import { VaccineService } from '../vaccine.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
-import { MedicamentsService } from '../medicaments.service';
-import { MedicamentDetailComponent } from '../medicament-detail/medicament-detail.component';
+import { VaccineDetailComponent } from '../vaccine-detail/vaccine-detail.component';
 
 @Component({
-    selector: 'medicament-log',
+    selector: 'vaccine-log',
     animations: fuseAnimations,
     encapsulation: ViewEncapsulation.None,
-    templateUrl: './medicament-log.component.html',
-    styleUrls: ['./medicament-log.component.scss'],
+    templateUrl: './vaccine-log.component.html',
+    styleUrls: ['./vaccine-log.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MedicamentLogComponent
-    implements OnInit, AfterViewInit, OnDestroy
-{
+export class VaccineLogComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild(MatSort) public sort: MatSort;
     @ViewChild(MatPaginator) public paginator: MatPaginator;
 
     public loading: boolean;
-    public medicaments: IMedicine[];
-    public medicaments$: Observable<IMedicine[]>;
+    public vaccines: IVaccine[];
+    public vaccines$: Observable<IVaccine[]>;
 
     public page: number;
     public count: number;
@@ -47,12 +45,12 @@ export class MedicamentLogComponent
 
     constructor(
         public readonly _dialog: MatDialog,
+        private readonly _service: VaccineService,
         private readonly _snackbar: SnackbarService,
-        private readonly _service: MedicamentsService,
         private readonly _changeDetectorRef: ChangeDetectorRef
     ) {
+        this.vaccines = [];
         this.loading = false;
-        this.medicaments = [];
         this._unsubscribe = new Subject();
 
         this.page = 1;
@@ -63,7 +61,7 @@ export class MedicamentLogComponent
     }
 
     ngOnInit(): void {
-        this._findMedicaments();
+        this._findVaccines();
         this._onListenDialog();
     }
 
@@ -100,19 +98,19 @@ export class MedicamentLogComponent
         this._unsubscribe.complete();
     }
 
-    private _findMedicaments(page: number = 1, pageSize: number = 10): void {
+    private _findVaccines(page: number = 1, pageSize: number = 10): void {
         this.loading = true;
         this._service
             .findPaginated(page, pageSize)
             .pipe(takeUntil(this._unsubscribe))
             .subscribe(
                 (res) => {
-                    this.medicaments = res?.data;
+                    this.vaccines = res?.data;
                     this.count = res?.count;
                 },
                 () => {
                     this._snackbar.open(
-                        'Ha ocurrido un error al obtener los medicamentos.'
+                        'Ha ocurrido un error al obtener las vacunaciones.'
                     );
                 },
                 () => {
@@ -120,33 +118,33 @@ export class MedicamentLogComponent
                 }
             );
 
-        this.medicaments$ = this._service.medicines$;
+        this.vaccines$ = this._service.vaccines$;
     }
 
     private _onListenDialog(): void {
         this._service.dialog$
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((res) => {
-                this._findMedicaments(
+                this._findVaccines(
                     this.paginator.pageIndex + 1,
                     this.paginator.pageSize
                 );
             });
     }
 
-    public deleteMedicament(id: number): void {
+    public deleteVaccine(id: number): void {
         this._service
             .delete(id)
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((res) => {
                 const message: string = !res
-                    ? 'Ha ocurrido un error al inhabilitar el medicamento.'
-                    : 'Se ha inhabilitado el medicamento de manera exitósa.';
+                    ? 'Ha ocurrido un error al inhabilitar la vacunación.'
+                    : 'Se ha inhabilitado la vacunación de manera exitósa.';
 
                 this._snackbar.open(message);
 
                 if (res) {
-                    this._findMedicaments(
+                    this._findVaccines(
                         this.paginator.pageIndex + 1,
                         this.paginator.pageSize
                     );
@@ -154,8 +152,8 @@ export class MedicamentLogComponent
             });
     }
 
-    public editMedicament(medicament: IMedicine) {
-        const dialogRef = this._dialog.open(MedicamentDetailComponent, {
+    public editVaccine(medicament: IVaccine) {
+        const dialogRef = this._dialog.open(VaccineDetailComponent, {
             width: '500px',
             data: medicament,
         });
@@ -164,7 +162,7 @@ export class MedicamentLogComponent
             .afterClosed()
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((result) => {
-                this._findMedicaments(
+                this._findVaccines(
                     this.paginator.pageIndex + 1,
                     this.paginator.pageSize
                 );
