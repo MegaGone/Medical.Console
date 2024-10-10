@@ -66,8 +66,37 @@ export const getMenuByRole = (role: number): Array<IFuseNavigationItem> => {
           },
         ],
       },
+      {
+        id: "apps.patient",
+        title: "Citas",
+        type: "collapsable",
+        icon: "heroicons_outline:heart",
+        children: [
+          {
+            id: "apps.doctor.users",
+            title: "Historial médico",
+            type: "basic",
+            link: "/paciente/historial",
+          },
+        ],
+      },
     ],
-    [ROLE_ENUM.PATIENT]: [],
+    [ROLE_ENUM.PATIENT]: [
+      {
+        id: "apps.patient",
+        title: "Citas",
+        type: "collapsable",
+        icon: "heroicons_outline:heart",
+        children: [
+          {
+            id: "apps.doctor.users",
+            title: "Historial médico",
+            type: "basic",
+            link: "/paciente/historial",
+          },
+        ],
+      },
+    ],
   };
 
   return menuConfig[role] || [];

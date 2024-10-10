@@ -100,5 +100,23 @@ export const appRoutes: Route[] = [
             },
         ],
     },
+    {
+        path: 'paciente',
+        canActivate: [AuthGuard],
+        component: LayoutComponent,
+        canActivateChild: [AuthGuard],
+        resolve: {
+            initialData: InitialDataResolver,
+        },
+        children: [
+            {
+                path: 'historial',
+                loadChildren: () =>
+                    import(
+                        'app/modules/patient/medical-history/medical-history.module'
+                    ).then((m) => m.MedicalHistoryModule),
+            },
+        ],
+    },
     { path: '**', pathMatch: 'full', redirectTo: `${main}` },
 ];

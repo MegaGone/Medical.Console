@@ -1,0 +1,122 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- MAIN -->
+    <div class="flex flex-col flex-auto items-center p-6 sm:p-10">
+        <div class="flex flex-col w-full max-w-4xl">
+            <!-- BACK -->
+            <div class="-ml-4 sm:mt-8">
+                <a mat-button [routerLink]="['../']" [color]="'primary'">
+                    <mat-icon
+                        [svgIcon]="'heroicons_outline:arrow-narrow-left'"
+                    ></mat-icon>
+                    <span class="ml-2">Volver</span>
+                </a>
+            </div>
+            <!-- /BACK -->
+
+            <!-- TITLE -->
+            <div
+                class="mt-2 text-4xl sm:text-7xl font-extrabold tracking-tight leading-tight"
+            >
+                Nueva cita
+            </div>
+            <!-- /TITLE -->
+
+            <!-- FORM -->
+            <div
+                class="mt-8 sm:mt-12 p-6 pb-7 sm:p-10 sm:pb-7 shadow rounded-2xl bg-card"
+            >
+                <form class="space-y-3" #supportNgForm="ngForm">
+                    <!-- DETAILS -->
+                    <div class="mb-6">
+                        <div class="text-2xl font-bold tracking-tight">
+                            {{ currentDate | date : "dd/MM/yyyy" }}
+                        </div>
+                        <div class="text-secondary">
+                            Revisado por: <strong>{{ user?.name }}</strong>
+                        </div>
+                    </div>
+                    <!-- /DETAILS -->
+
+                    <!-- NAME -->
+                    <mat-form-field class="w-full">
+                        <input matInput [required]="true" />
+                        <mat-label>Título</mat-label>
+                        <!-- <mat-error
+                            *ngIf="supportForm.get('name').hasError('required')"
+                        >
+                            Required
+                        </mat-error> -->
+                    </mat-form-field>
+                    <!-- NAME -->
+
+                    <!-- EMAIL -->
+                    <mat-form-field class="w-full">
+                        <input type="email" matInput [required]="true" />
+                        <mat-label>Nombre del paciente</mat-label>
+                        <!-- <mat-error
+                            *ngIf="
+                                supportForm.get('email').hasError('required')
+                            "
+                        >
+                            Required
+                        </mat-error>
+                        <mat-error
+                            *ngIf="supportForm.get('email').hasError('email')"
+                        >
+                            Enter a valid email address
+                        </mat-error> -->
+                    </mat-form-field>
+                    <!-- /EMAIL -->
+
+                    <!-- SUBJECT -->
+                    <!-- <mat-form-field class="w-full">
+                        <input matInput [required]="true" />
+                        <mat-label>Subject</mat-label>
+                        <mat-error
+                            *ngIf="
+                                supportForm.get('subject').hasError('required')
+                            "
+                        >
+                            Required
+                        </mat-error>
+                    </mat-form-field> -->
+                    <!-- /SUBJECT -->
+
+                    <!-- MESSAGE -->
+                    <mat-form-field class="fuse-mat-textarea w-full">
+                        <textarea
+                            matInput
+                            [required]="true"
+                            [rows]="5"
+                            matTextareaAutosize
+                        ></textarea>
+                        <mat-label>Descripción médica</mat-label>
+                        <!-- <mat-error
+                            *ngIf="
+                                supportForm.get('message').hasError('required')
+                            "
+                        >
+                            Required
+                        </mat-error> -->
+                    </mat-form-field>
+                    <!-- /MESSAGE -->
+
+                    <!-- BUTTONS -->
+                    <div class="flex items-center justify-end">
+                        <button mat-button [color]="'accent'">Clear</button>
+                        <button
+                            class="ml-2"
+                            mat-flat-button
+                            [color]="'primary'"
+                        >
+                            Submit
+                        </button>
+                    </div>
+                    <!-- /BUTTONS -->
+                </form>
+            </div>
+            <!-- /FORM -->
+        </div>
+    </div>
+    <!-- /MAIN -->
+</div>
