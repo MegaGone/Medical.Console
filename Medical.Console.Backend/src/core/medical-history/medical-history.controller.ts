@@ -19,10 +19,16 @@ export class MedicalHistoryController {
 
   @Post("/create")
   public async create(@Body() createMedicalHistoryDto: CreateMedicalHistoryDto) {
-    const stored = await this._service.create({
-      identificator: unixDate(),
-      ...createMedicalHistoryDto,
-    });
+    const { vaccineIds, medicineIds } = await createMedicalHistoryDto;
+
+    const stored = await this._service.create(
+      {
+        identificator: unixDate(),
+        ...createMedicalHistoryDto,
+      },
+      vaccineIds,
+      medicineIds,
+    );
     return { stored };
   }
 

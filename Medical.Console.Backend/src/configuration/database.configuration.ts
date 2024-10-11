@@ -1,9 +1,13 @@
+import {
+  MedicalHistory,
+  UserVaccineData,
+  UserMedicineData,
+} from "src/core/medical-history/entities";
 import { registerAs } from "@nestjs/config";
 import { User } from "src/core/user/entities";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Vaccine } from "src/core/vaccine/entities";
 import { Medicine } from "src/core/medicine/entities";
-import { MedicalHistory } from "src/core/medical-history/entities";
 
 export default registerAs(
   "database",
@@ -17,7 +21,7 @@ export default registerAs(
     password: process.env.DB_PASSWORD || "",
     synchronize: false,
     dropSchema: false,
-    entities: [User, Medicine, Vaccine, MedicalHistory],
+    entities: [User, Medicine, Vaccine, MedicalHistory, UserVaccineData, UserMedicineData],
     ssl: true,
     extra: {
       ssl: {

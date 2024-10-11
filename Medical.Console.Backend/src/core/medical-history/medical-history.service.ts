@@ -1,5 +1,5 @@
 import { FindOptionsWhere, Repository } from "typeorm";
-import { MedicalHistory } from "./entities";
+import { MedicalHistory, UserMedicineData, UserVaccineData } from "./entities";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { ROLE_ENUM } from "../auth/enums";
@@ -11,14 +11,27 @@ export class MedicalHistoryService {
   constructor(
     @InjectRepository(MedicalHistory)
     private readonly _repository: Repository<MedicalHistory>,
+    @InjectRepository(UserVaccineData)
+    private readonly _vaccine: Repository<UserVaccineData>,
+    @InjectRepository(UserMedicineData)
+    private readonly _medicine: Repository<UserMedicineData>,
   ) {}
 
-  public async create(record: Partial<MedicalHistory>): Promise<boolean> {
+  public async create(
+    record: Partial<MedicalHistory>,
+    vaccineIds: Array<number>,
+    medicineIds: Array<number>,
+  ): Promise<boolean> {
     try {
       const { identifiers } = await this._repository.insert(record);
       const { id } = identifiers[0];
 
-      return id && id >= 1;
+      if (!id && id < 1) return false;
+
+      const vaccines = await this._insertVaccines(vaccineIds, id);
+      const medicines = await this._insertMedicines(medicineIds, id);
+
+      return vaccines && medicines;
     } catch (error) {
       this._logger.error("[ERROR][MEDICAL HISTORY][CREATE]", error);
       return false;
@@ -106,6 +119,44 @@ export class MedicalHistoryService {
     } catch (error) {
       this._logger.error("[ERROR][MEDICAL HISTORY][FIND PAGINATED]", error);
       return { data: [], count: -1 };
+    }
+  }
+
+  private async _insertVaccines(vaccineIds: Array<number>, historyId: number): Promise<boolean> {
+    try {
+      if (!vaccineIds || !vaccineIds?.length) return true;
+
+      const vaccines: Array<Partial<UserVaccineData>> = vaccineIds?.map((v: number) => {
+        return {
+          vaccineId: v,
+          medicalHistoryId: historyId,
+        };
+      });
+
+      const { identifiers } = await this._vaccine.insert(vaccines);
+      return identifiers && identifiers?.length >= 1;
+    } catch (error) {
+      this._logger.error("[ERROR][MEDICAL HISTORY][INSERT VACCINES]", error);
+      return false;
+    }
+  }
+
+  private async _insertMedicines(medicineIds: Array<number>, historyId: number): Promise<boolean> {
+    try {
+      if (!medicineIds || !medicineIds?.length) return true;
+
+      const medicines: Array<Partial<UserMedicineData>> = medicineIds?.map((m: number) => {
+        return {
+          medicineId: m,
+          medicalHistoryId: historyId,
+        };
+      });
+
+      const { identifiers } = await this._medicine.insert(medicines);
+      return identifiers && identifiers?.length >= 1;
+    } catch (error) {
+      this._logger.error("[ERROR][MEDICAL HISTORY][INSERT MEDICINES]", error);
+      return false;
     }
   }
 }

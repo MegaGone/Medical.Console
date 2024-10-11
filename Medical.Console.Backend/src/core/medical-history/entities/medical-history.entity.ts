@@ -2,15 +2,14 @@ import {
   Column,
   Entity,
   ManyToOne,
-  JoinTable,
-  ManyToMany,
+  OneToMany,
   JoinColumn,
   CreateDateColumn,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { User } from "src/core/user/entities";
-import { Vaccine } from "src/core/vaccine/entities";
-import { Medicine } from "src/core/medicine/entities";
+import { UserVaccineData } from "./medical-history-vaccine.entity";
+import { UserMedicineData } from "./medical-history-medicine.entity";
 
 @Entity({ name: "MedicalHistoryData" })
 export class MedicalHistory {
@@ -53,19 +52,9 @@ export class MedicalHistory {
   @JoinColumn({ name: "doctorId" })
   doctor!: User;
 
-  @ManyToMany(() => Vaccine, { nullable: true })
-  @JoinTable({
-    name: "UserVaccineData",
-    joinColumn: { name: "medicalHistoryId", referencedColumnName: "id" },
-    inverseJoinColumn: { name: "vaccineId", referencedColumnName: "id" },
-  })
-  vaccines?: Array<Vaccine>;
+  @OneToMany(() => UserVaccineData, (vaccine) => vaccine.history, { nullable: true })
+  vaccines?: Array<UserVaccineData>;
 
-  @ManyToMany(() => Medicine, { nullable: true })
-  @JoinTable({
-    name: "UserMedicineData",
-    joinColumn: { name: "medicalHistoryId", referencedColumnName: "id" },
-    inverseJoinColumn: { name: "medicineId", referencedColumnName: "id" },
-  })
-  medicines?: Array<Medicine>;
+  @OneToMany(() => UserMedicineData, (medicine) => medicine.history, { nullable: true })
+  medicines?: Array<UserMedicineData>;
 }
