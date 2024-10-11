@@ -8,6 +8,7 @@ import { SharedModule } from './core/shared/shared.module';
 import { PatientModule } from './core/patient/patient.module';
 import { MedicineModule } from './core/medicine/medicine.module';
 import { VaccineModule } from './core/vaccine/vaccine.module';
+import { MedicalHistoryModule } from './core/medical-history/medical-history.module';
 
 import Config from './configuration/global.configuration';
 import DBConfig from './configuration/database.configuration';
@@ -24,6 +25,7 @@ import DBConfig from './configuration/database.configuration';
     PatientModule,
     MedicineModule,
     VaccineModule,
+    MedicalHistoryModule,
   ],
   controllers: [],
   providers: [],
