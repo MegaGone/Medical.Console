@@ -109,13 +109,39 @@ export class MedicalHistoryService {
         },
         relations: {
           doctor: true,
-          patient: true,
-          // vaccines: true,
-          // medicines: true,
+          vaccines: {
+            vaccine: true,
+          },
+          medicines: {
+            medicine: true,
+          },
+        },
+        select: {
+          doctor: {
+            id: true,
+            email: true,
+            displayName: true,
+          },
+          vaccines: {
+            id: true,
+            vaccine: {
+              id: true,
+              name: true,
+              description: true,
+            },
+          },
+          medicines: {
+            id: true,
+            medicine: {
+              id: true,
+              name: true,
+              description: true,
+            },
+          },
         },
       });
 
-      return { data, count };
+      return { count, data };
     } catch (error) {
       this._logger.error("[ERROR][MEDICAL HISTORY][FIND PAGINATED]", error);
       return { data: [], count: -1 };
