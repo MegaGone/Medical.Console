@@ -42,6 +42,41 @@ export class MedicalHistoryService {
     try {
       const record = await this._repository.findOne({
         where: options,
+        order: {
+          createdAt: "DESC",
+        },
+        relations: {
+          doctor: true,
+          vaccines: {
+            vaccine: true,
+          },
+          medicines: {
+            medicine: true,
+          },
+        },
+        select: {
+          doctor: {
+            id: true,
+            email: true,
+            displayName: true,
+          },
+          vaccines: {
+            id: true,
+            vaccine: {
+              id: true,
+              name: true,
+              description: true,
+            },
+          },
+          medicines: {
+            id: true,
+            medicine: {
+              id: true,
+              name: true,
+              description: true,
+            },
+          },
+        },
       });
 
       if (!record) throw new NotFoundException("MedicalHistory not founded.");
@@ -109,34 +144,12 @@ export class MedicalHistoryService {
         },
         relations: {
           doctor: true,
-          vaccines: {
-            vaccine: true,
-          },
-          medicines: {
-            medicine: true,
-          },
         },
         select: {
           doctor: {
             id: true,
             email: true,
             displayName: true,
-          },
-          vaccines: {
-            id: true,
-            vaccine: {
-              id: true,
-              name: true,
-              description: true,
-            },
-          },
-          medicines: {
-            id: true,
-            medicine: {
-              id: true,
-              name: true,
-              description: true,
-            },
           },
         },
       });
