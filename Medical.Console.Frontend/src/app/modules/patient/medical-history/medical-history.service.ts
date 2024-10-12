@@ -10,6 +10,7 @@ import {
     IMedicHistoriesPaginated,
     ICreateMedicHistoryResponse,
     IDisableMedicHistoryResponse,
+    IFindMedicHistoryResponse,
 } from 'app/interfaces';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from 'environments/environment';
@@ -130,6 +131,19 @@ export class MedicalHistoryService {
             .pipe(
                 map((res) => res?.disabled),
                 catchError((err) => of(false))
+            );
+    }
+
+    public findOne(id: number): Observable<Partial<IMedicHistory>> {
+        return this._http
+            .get<IFindMedicHistoryResponse>(
+                `${API_URL}medical-history/findById/${id}`
+            )
+            .pipe(
+                map((res: IFindMedicHistoryResponse) => {
+                    return !res?.data ? null : res?.data;
+                }),
+                catchError((err) => of(null))
             );
     }
 }

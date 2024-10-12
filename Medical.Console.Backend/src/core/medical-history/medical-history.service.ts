@@ -38,7 +38,9 @@ export class MedicalHistoryService {
     }
   }
 
-  public async findOne(options: FindOptionsWhere<MedicalHistory>): Promise<MedicalHistory> {
+  public async findOne(
+    options: FindOptionsWhere<MedicalHistory>,
+  ): Promise<{ data: MedicalHistory }> {
     try {
       const record = await this._repository.findOne({
         where: options,
@@ -81,7 +83,7 @@ export class MedicalHistoryService {
 
       if (!record) throw new NotFoundException("MedicalHistory not founded.");
 
-      return record;
+      return { data: record };
     } catch (error) {
       this._logger.error("[ERROR][MEDICAL HISTORY][FIND BY ID]", error);
       return null;

@@ -42,3 +42,7 @@ export interface ICreateMedicHistoryResponse {
 export interface IDisableMedicHistoryResponse {
     disabled: boolean;
 }
+
+export interface IFindMedicHistoryResponse {
+    data: Partial<IMedicHistory>;
+}
