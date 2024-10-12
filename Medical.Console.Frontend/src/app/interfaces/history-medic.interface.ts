@@ -26,9 +26,15 @@ export interface IMedicHistory {
     treatment: string;
     identificator: string;
     doctor: Partial<IUser>;
+    vaccineIds: Array<number>;
+    medicineIds: Array<number>;
 }
 
 export interface IMedicHistoriesPaginated {
     count: number;
     data: Array<IMedicHistory>;
+}
+
+export interface ICreateMedicHistoryResponse {
+    stored: boolean;
 }

@@ -6,6 +6,7 @@ import { MedicalHistoryService } from '../medical-history.service';
 import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { SnackbarService } from 'app/core/util';
 
 @Component({
     selector: 'app-history-detail',
@@ -38,6 +39,7 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
     constructor(
         private readonly _fb: FormBuilder,
         private readonly _session: UserService,
+        private readonly _snackbar: SnackbarService,
         private readonly _service: MedicalHistoryService,
         private readonly _changeDetectorRef: ChangeDetectorRef
     ) {
@@ -204,11 +206,19 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
                 c.markAsTouched()
             );
 
-        console.log(this.Form.getRawValue());
+        this._service
+            .create(this.Form.getRawValue())
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((res) => {
+                const message: string = !res
+                    ? 'Ha ocurrido un error al crear el historial médico.'
+                    : 'El historial médico se ha creado exitósamente.';
+
+                this._snackbar.open(message);
+            });
     }
 
     // TODO:
-    // 3. ALMACENAR CITA
     // 4. REDIREACCIONAR A VISTA
     // 5. SI SE CREA BIEN, REDIRECCIONAR CON EL USUARIO RECIEN CREADA LA CITA.
 }

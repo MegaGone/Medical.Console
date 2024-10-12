@@ -8,6 +8,7 @@ import {
     ISearchVaccinesAsync,
     ISearchMedicinesAsync,
     IMedicHistoriesPaginated,
+    ICreateMedicHistoryResponse,
 } from 'app/interfaces';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from 'environments/environment';
@@ -105,6 +106,18 @@ export class MedicalHistoryService {
                     return res;
                 }),
                 catchError((err) => of(null))
+            );
+    }
+
+    public create(history: Partial<IMedicHistory>): Observable<boolean> {
+        return this._http
+            .post<ICreateMedicHistoryResponse>(
+                `${API_URL}medical-history/create`,
+                history
+            )
+            .pipe(
+                map((res) => res?.stored),
+                catchError((err) => of(false))
             );
     }
 }
