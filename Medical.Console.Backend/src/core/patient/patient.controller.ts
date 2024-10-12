@@ -20,6 +20,7 @@ import {
   DeletePatientDto,
   UpdatePatientDto,
   FindPatientByIDto,
+  SearchPatientAsyncDto,
   FindPatientsPaginatedDto,
 } from "./dto";
 
@@ -72,5 +73,11 @@ export class PatientController {
     const { id } = deletePatientDto;
     const deleted = await this._service.disable(id);
     return { deleted };
+  }
+
+  @Get("/search")
+  public async searchAsync(@Query() searchPatientAsyncDto: SearchPatientAsyncDto) {
+    const { input } = searchPatientAsyncDto;
+    return this._service.search(input);
   }
 }

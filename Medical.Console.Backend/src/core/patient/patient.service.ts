@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { ILike, Like, Repository } from "typeorm";
 import { User } from "../user/entities";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -103,6 +103,27 @@ export class PatientService {
       return !user ? false : true;
     } catch (error) {
       throw new InternalServerErrorException(error);
+    }
+  }
+
+  public async search(input: string): Promise<{ data: Array<User> }> {
+    try {
+      const patients = await this._repository.find({
+        where: {
+          isEnabled: 1,
+          role: ROLE_ENUM.PATIENT,
+          displayName: ILike(`%${input}%`),
+        },
+        select: {
+          id: true,
+          email: true,
+          displayName: true,
+        },
+      });
+
+      return { data: patients };
+    } catch (error) {
+      return { data: [] };
     }
   }
 }
