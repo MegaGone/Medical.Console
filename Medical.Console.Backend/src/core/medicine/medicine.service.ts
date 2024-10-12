@@ -1,4 +1,4 @@
-import { FindOptionsWhere, Repository } from "typeorm";
+import { FindOptionsWhere, ILike, Repository } from "typeorm";
 import { Medicine } from "./entities";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -92,6 +92,26 @@ export class MedicineService {
     } catch (error) {
       this._logger.error("[ERROR][MEDICINE][FIND PAGINATED]", error);
       return { data: [], count: -1 };
+    }
+  }
+
+  public async search(input: string): Promise<{ data: Array<Medicine> }> {
+    try {
+      const medicines = await this._repository.find({
+        where: {
+          isEnabled: 1,
+          name: ILike(`%${input}%`),
+        },
+        select: {
+          id: true,
+          name: true,
+          description: true,
+        },
+      });
+
+      return { data: medicines };
+    } catch (error) {
+      return { data: [] };
     }
   }
 }

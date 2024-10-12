@@ -1,14 +1,18 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
     IUser,
+    IVaccine,
+    IMedicine,
     IMedicHistory,
     ISearchPatientsAsync,
+    ISearchVaccinesAsync,
+    ISearchMedicinesAsync,
     IMedicHistoriesPaginated,
 } from 'app/interfaces';
 import { catchError, map } from 'rxjs/operators';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { environment } from 'environments/environment';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 const API_URL = environment.API_URL;
 
 @Injectable({
@@ -42,6 +46,36 @@ export class MedicalHistoryService {
             })
             .pipe(
                 map((res: ISearchPatientsAsync) => {
+                    return !res || !res?.data ? [] : res?.data;
+                }),
+                catchError((error) => of([]))
+            );
+    }
+
+    public searchMedicineAsync(
+        input: string
+    ): Observable<Array<Partial<IMedicine>>> {
+        return this._http
+            .get<ISearchMedicinesAsync>(`${API_URL}medicine/search`, {
+                params: { input },
+            })
+            .pipe(
+                map((res: ISearchMedicinesAsync) => {
+                    return !res || !res?.data ? [] : res?.data;
+                }),
+                catchError((error) => of([]))
+            );
+    }
+
+    public searchVaccineAsync(
+        input: string
+    ): Observable<Array<Partial<IVaccine>>> {
+        return this._http
+            .get<ISearchVaccinesAsync>(`${API_URL}vaccine/search`, {
+                params: { input },
+            })
+            .pipe(
+                map((res: ISearchVaccinesAsync) => {
                     return !res || !res?.data ? [] : res?.data;
                 }),
                 catchError((error) => of([]))

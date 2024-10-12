@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Vaccine } from "./entities";
-import { FindOptionsWhere, Repository } from "typeorm";
+import { FindOptionsWhere, ILike, Repository } from "typeorm";
 
 @Injectable()
 export class VaccineService {
@@ -92,6 +92,26 @@ export class VaccineService {
     } catch (error) {
       this._logger.error("[ERROR][VACCINE][FIND PAGINATED]", error);
       return { data: [], count: -1 };
+    }
+  }
+
+  public async search(input: string): Promise<{ data: Array<Vaccine> }> {
+    try {
+      const vaccines = await this._repository.find({
+        where: {
+          isEnabled: 1,
+          name: ILike(`%${input}%`),
+        },
+        select: {
+          id: true,
+          name: true,
+          description: true,
+        },
+      });
+
+      return { data: vaccines };
+    } catch (error) {
+      return { data: [] };
     }
   }
 }

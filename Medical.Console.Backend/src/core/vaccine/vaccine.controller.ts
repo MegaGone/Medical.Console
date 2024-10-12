@@ -19,6 +19,7 @@ import {
   CreateVaccineDto,
   DeleteVaccineDto,
   UpdateVaccineDto,
+  SearchVaccineAsyncDto,
   FindVaccinesPaginatedDto,
 } from "./dto";
 
@@ -62,5 +63,11 @@ export class VaccineController {
     const { id } = deleteMedicineDto;
     const disabled = await this._service.disable(id);
     return { disabled };
+  }
+
+  @Get("/search")
+  public async searchAsync(@Query() searchVaccineAsyncDto: SearchVaccineAsyncDto) {
+    const { input } = searchVaccineAsyncDto;
+    return this._service.search(input);
   }
 }

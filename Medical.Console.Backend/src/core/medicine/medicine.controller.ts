@@ -7,6 +7,7 @@ import {
   CreateMedicineDto,
   DeleteMedicineDto,
   UpdateMedicineDto,
+  SearchMedicineAsyncDto,
   FindMedicinesPaginatedDto,
 } from "./dto";
 import {
@@ -62,5 +63,11 @@ export class MedicineController {
     const { id } = deleteMedicineDto;
     const disabled = await this._service.disable(id);
     return { disabled };
+  }
+
+  @Get("/search")
+  public async searchAsync(@Query() searchMedicineAsyncDto: SearchMedicineAsyncDto) {
+    const { input } = searchMedicineAsyncDto;
+    return this._service.search(input);
   }
 }

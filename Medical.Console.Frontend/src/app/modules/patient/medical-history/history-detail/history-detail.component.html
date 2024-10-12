@@ -37,22 +37,137 @@
                     </div>
                     <!-- /DETAILS -->
 
-                    <!-- NAME -->
+                    <!-- DIAGNOSIS -->
                     <mat-form-field class="w-full">
                         <input matInput [required]="true" />
-                        <mat-label>Título</mat-label>
+                        <mat-label>Diagnosis</mat-label>
                         <!-- <mat-error
                             *ngIf="supportForm.get('name').hasError('required')"
                         >
                             Required
                         </mat-error> -->
                     </mat-form-field>
-                    <!-- NAME -->
+                    <!-- DIAGNOSIS -->
 
-                    <!-- EMAIL -->
+                    <!-- PATIENT -->
                     <mat-form-field class="w-full">
-                        <input type="email" matInput [required]="true" />
-                        <mat-label>Nombre del paciente</mat-label>
+                        <mat-label>Paciente</mat-label>
+                        <mat-select
+                            [required]="true"
+                            (openedChange)="
+                                patientsFilterControl.onClearFilter()
+                            "
+                        >
+                            <select-filter
+                                #patientsFilterControl
+                                placeholderLabel="Buscar..."
+                                (searchValueOutput)="onFilterPatients($event)"
+                            ></select-filter>
+
+                            <mat-option
+                                disabled
+                                *ngIf="!isLoadingPatients && !patients?.length"
+                            >
+                                No existen resultados
+                            </mat-option>
+
+                            <mat-option
+                                *ngFor="let p of patients"
+                                [value]="p?.id"
+                            >
+                                {{ p?.displayName }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <!-- /PATIENT -->
+
+                    <!-- MEDICINES -->
+                    <mat-form-field class="w-full">
+                        <mat-label>Medicinas</mat-label>
+                        <mat-select
+                            [multiple]="true"
+                            (openedChange)="
+                                patientsFilterControl.onClearFilter()
+                            "
+                        >
+                            <select-filter
+                                #patientsFilterControl
+                                placeholderLabel="Buscar..."
+                                (searchValueOutput)="onFilterPatients($event)"
+                            ></select-filter>
+
+                            <mat-option
+                                disabled
+                                *ngIf="!isLoadingPatients && !patients?.length"
+                            >
+                                No existen resultados
+                            </mat-option>
+
+                            <mat-option
+                                *ngFor="let p of patients"
+                                [value]="p?.id"
+                            >
+                                {{ p?.displayName }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <!-- /MEDICINES -->
+
+                    <!-- VACCINES -->
+                    <mat-form-field class="w-full">
+                        <mat-label>Vacunas</mat-label>
+                        <mat-select
+                            [multiple]="true"
+                            (openedChange)="
+                                patientsFilterControl.onClearFilter()
+                            "
+                        >
+                            <select-filter
+                                #patientsFilterControl
+                                placeholderLabel="Buscar..."
+                                (searchValueOutput)="onFilterPatients($event)"
+                            ></select-filter>
+
+                            <mat-option
+                                disabled
+                                *ngIf="!isLoadingPatients && !patients?.length"
+                            >
+                                No existen resultados
+                            </mat-option>
+
+                            <mat-option
+                                *ngFor="let p of patients"
+                                [value]="p?.id"
+                            >
+                                {{ p?.displayName }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <!-- /VACCINES -->
+
+                    <!-- TREATMENT -->
+                    <mat-form-field class="fuse-mat-textarea w-full">
+                        <textarea
+                            matInput
+                            [rows]="5"
+                            [required]="true"
+                            matTextareaAutosize
+                        ></textarea>
+                        <mat-label>Descripción médica</mat-label>
+                        <!-- <mat-error
+                            *ngIf="
+                                supportForm.get('message').hasError('required')
+                            "
+                        >
+                            Required
+                        </mat-error> -->
+                    </mat-form-field>
+                    <!-- /TREATMENT -->
+
+                    <!-- NOTES -->
+                    <mat-form-field class="w-full">
+                        <input type="text" matInput [required]="true" />
+                        <mat-label>Notas adicionales</mat-label>
                         <!-- <mat-error
                             *ngIf="
                                 supportForm.get('email').hasError('required')
@@ -66,50 +181,16 @@
                             Enter a valid email address
                         </mat-error> -->
                     </mat-form-field>
-                    <!-- /EMAIL -->
-
-                    <!-- SUBJECT -->
-                    <!-- <mat-form-field class="w-full">
-                        <input matInput [required]="true" />
-                        <mat-label>Subject</mat-label>
-                        <mat-error
-                            *ngIf="
-                                supportForm.get('subject').hasError('required')
-                            "
-                        >
-                            Required
-                        </mat-error>
-                    </mat-form-field> -->
-                    <!-- /SUBJECT -->
-
-                    <!-- MESSAGE -->
-                    <mat-form-field class="fuse-mat-textarea w-full">
-                        <textarea
-                            matInput
-                            [required]="true"
-                            [rows]="5"
-                            matTextareaAutosize
-                        ></textarea>
-                        <mat-label>Descripción médica</mat-label>
-                        <!-- <mat-error
-                            *ngIf="
-                                supportForm.get('message').hasError('required')
-                            "
-                        >
-                            Required
-                        </mat-error> -->
-                    </mat-form-field>
-                    <!-- /MESSAGE -->
+                    <!-- /NOTES -->
 
                     <!-- BUTTONS -->
                     <div class="flex items-center justify-end">
-                        <button mat-button [color]="'accent'">Clear</button>
                         <button
                             class="ml-2"
                             mat-flat-button
                             [color]="'primary'"
                         >
-                            Submit
+                            Registrar cita
                         </button>
                     </div>
                     <!-- /BUTTONS -->

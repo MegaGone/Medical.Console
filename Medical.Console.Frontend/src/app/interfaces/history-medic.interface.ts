@@ -1,7 +1,17 @@
 import { IUser } from './user.interface';
+import { IVaccine } from './vaccine.interface';
+import { IMedicine } from './medicament.interface';
 
 export interface ISearchPatientsAsync {
     data: Array<Partial<IUser>>;
+}
+
+export interface ISearchMedicinesAsync {
+    data: Array<Partial<IMedicine>>;
+}
+
+export interface ISearchVaccinesAsync {
+    data: Array<Partial<IVaccine>>;
 }
 
 export interface IMedicHistory {
