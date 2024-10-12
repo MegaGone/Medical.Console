@@ -103,8 +103,6 @@ export class HistoryLogComponent implements OnInit, AfterViewInit, OnDestroy {
                 (res) => {
                     this.medicalHistories = res?.data;
                     this.count = res?.count;
-
-                    console.log(this.count);
                 },
                 () => {
                     this._snackbar.open(
@@ -113,11 +111,11 @@ export class HistoryLogComponent implements OnInit, AfterViewInit, OnDestroy {
                 },
                 () => {
                     this.loading = false;
+                    this._changeDetectorRef.markForCheck();
                 }
             );
 
         this.medicalHistories$ = this._service.medicHistories$;
-        console.log(this.medicalHistories$);
     }
 
     private _onListenSelectedPatient(): void {
