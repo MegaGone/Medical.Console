@@ -25,7 +25,7 @@
             <div
                 class="mt-8 sm:mt-12 p-6 pb-7 sm:p-10 sm:pb-7 shadow rounded-2xl bg-card"
             >
-                <form class="space-y-3" #supportNgForm="ngForm">
+                <form name="Form" class="space-y-3" [formGroup]="Form">
                     <!-- DETAILS -->
                     <div class="mb-6">
                         <div class="text-2xl font-bold tracking-tight">
@@ -39,13 +39,17 @@
 
                     <!-- DIAGNOSIS -->
                     <mat-form-field class="w-full">
-                        <input matInput [required]="true" />
+                        <input
+                            matInput
+                            [required]="true"
+                            formControlName="diagnosis"
+                        />
                         <mat-label>Diagnosis</mat-label>
-                        <!-- <mat-error
-                            *ngIf="supportForm.get('name').hasError('required')"
+                        <mat-error
+                            *ngIf="Form.get('diagnosis').hasError('required')"
                         >
-                            Required
-                        </mat-error> -->
+                            Campo requerido.
+                        </mat-error>
                     </mat-form-field>
                     <!-- DIAGNOSIS -->
 
@@ -54,6 +58,7 @@
                         <mat-label>Paciente</mat-label>
                         <mat-select
                             [required]="true"
+                            formControlName="userId"
                             (openedChange)="
                                 patientsFilterControl.onClearFilter()
                             "
@@ -78,6 +83,11 @@
                                 {{ p?.displayName }}
                             </mat-option>
                         </mat-select>
+                        <mat-error
+                            *ngIf="Form.get('userId').hasError('required')"
+                        >
+                            Campo requerido.
+                        </mat-error>
                     </mat-form-field>
                     <!-- /PATIENT -->
 
@@ -86,6 +96,7 @@
                         <mat-label>Medicinas</mat-label>
                         <mat-select
                             [multiple]="true"
+                            formControlName="medicineIds"
                             (openedChange)="
                                 medicinesFilterControl.onClearFilter()
                             "
@@ -120,6 +131,7 @@
                         <mat-label>Vacunas</mat-label>
                         <mat-select
                             [multiple]="true"
+                            formControlName="vaccineIds"
                             (openedChange)="
                                 vaccinesFilterControl.onClearFilter()
                             "
@@ -154,34 +166,32 @@
                             [rows]="5"
                             [required]="true"
                             matTextareaAutosize
+                            formControlName="treatment"
                         ></textarea>
                         <mat-label>Descripción médica</mat-label>
-                        <!-- <mat-error
-                            *ngIf="
-                                supportForm.get('message').hasError('required')
-                            "
+                        <mat-error
+                            *ngIf="Form.get('treatment').hasError('required')"
                         >
-                            Required
-                        </mat-error> -->
+                            Campo requerido.
+                        </mat-error>
                     </mat-form-field>
                     <!-- /TREATMENT -->
 
                     <!-- NOTES -->
-                    <mat-form-field class="w-full">
-                        <input type="text" matInput [required]="true" />
+                    <mat-form-field class="fuse-mat-textarea w-full">
+                        <textarea
+                            matInput
+                            [rows]="5"
+                            [required]="true"
+                            matTextareaAutosize
+                            formControlName="notes"
+                        ></textarea>
                         <mat-label>Notas adicionales</mat-label>
-                        <!-- <mat-error
-                            *ngIf="
-                                supportForm.get('email').hasError('required')
-                            "
-                        >
-                            Required
-                        </mat-error>
                         <mat-error
-                            *ngIf="supportForm.get('email').hasError('email')"
+                            *ngIf="Form.get('notes').hasError('required')"
                         >
-                            Enter a valid email address
-                        </mat-error> -->
+                            Campo requerido.
+                        </mat-error>
                     </mat-form-field>
                     <!-- /NOTES -->
 
@@ -191,6 +201,8 @@
                             class="ml-2"
                             mat-flat-button
                             [color]="'primary'"
+                            (click)="onRegister()"
+                            [disabled]="Form.invalid || Form.pristine"
                         >
                             Registrar cita
                         </button>

@@ -5,6 +5,7 @@ import { IMedicine, IUser, IVaccine } from 'app/interfaces';
 import { MedicalHistoryService } from '../medical-history.service';
 import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
     selector: 'app-history-detail',
@@ -30,7 +31,10 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
     private _vaccineSearch: Subject<string>;
     private _medicineSearch: Subject<string>;
 
+    public Form: FormGroup;
+
     constructor(
+        private readonly _fb: FormBuilder,
         private readonly _session: UserService,
         private readonly _service: MedicalHistoryService,
         private readonly _changeDetectorRef: ChangeDetectorRef
@@ -54,6 +58,7 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this._getSession();
+        this._initForm();
         this._onFilterPatients();
         this._onFilterVaccines();
         this._onFilterMedicines();
@@ -62,6 +67,18 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this._unsubscribe.next();
         this._unsubscribe.complete();
+    }
+
+    private _initForm(): void {
+        this.Form = this._fb.group({
+            vaccineIds: [null],
+            medicineIds: [null],
+            notes: ['', [Validators.required]],
+            userId: ['', [Validators.required]],
+            diagnosis: ['', [Validators.required]],
+            treatment: ['', [Validators.required]],
+            doctorId: [this.user?.id, [Validators.required]],
+        });
     }
 
     private _getSession() {
@@ -156,8 +173,16 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
         this._vaccineSearch.next(value);
     }
 
+    public onRegister() {
+        if (this.Form.invalid)
+            return Object.values(this.Form.controls).forEach((c) =>
+                c.markAsTouched()
+            );
+
+        console.log(this.Form.getRawValue());
+    }
+
     // TODO:
-    // 1. CREAR ENDPOINTS PARA BUSCAR MEDICNAS Y MEDICAMENTOS POR NOMBRE DE MANERA ASYNC.
     // 2. ALMACENAR LOS ID'S SELECCIONADOS EN UN ARRAY PROVISIONAL Y MOSTRARLOS EN EL HTML.
     // 3. ALMACENAR CITA
     // 4. REDIREACCIONAR A VISTA
