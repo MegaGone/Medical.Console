@@ -7,6 +7,7 @@ import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SnackbarService } from 'app/core/util';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-history-detail',
@@ -41,6 +42,7 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
     public maxLengthTreatment: number;
 
     constructor(
+        private readonly _router: Router,
         private readonly _fb: FormBuilder,
         private readonly _session: UserService,
         private readonly _snackbar: SnackbarService,
@@ -217,16 +219,24 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
         this._service
             .create(this.Form.getRawValue())
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe((res) => {
-                const message: string = !res
-                    ? 'Ha ocurrido un error al crear el historial médico.'
-                    : 'El historial médico se ha creado exitósamente.';
+            .subscribe(
+                (res) => {
+                    const message: string = !res
+                        ? 'Ha ocurrido un error al crear el historial médico.'
+                        : 'El historial médico se ha creado exitósamente.';
 
-                this._snackbar.open(message);
-            });
+                    this._snackbar.open(message);
+                },
+                (err) => {
+                    this._snackbar.open(
+                        'Ha ocurrido un error al crear el historial médico.'
+                    );
+                },
+                () => {
+                    setTimeout(() => {
+                        this._router.navigate(['/paciente/historial']);
+                    }, 1000);
+                }
+            );
     }
-
-    // TODO:
-    // 4. REDIREACCIONAR A VISTA
-    // 5. SI SE CREA BIEN, REDIRECCIONAR CON EL USUARIO RECIEN CREADA LA CITA.
 }
