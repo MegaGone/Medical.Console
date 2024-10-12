@@ -64,5 +64,6 @@ export class MedicalHistoryComponent implements OnInit {
         );
 
         this.selectedPatient = patient;
+        this._service.patientSelected(this.selectedPatient);
     }
 }

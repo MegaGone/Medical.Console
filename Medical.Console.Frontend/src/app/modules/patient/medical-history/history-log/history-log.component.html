@@ -1,1 +1,39 @@
-<p>history-log works!</p>
+<ng-container>
+    <div class="grid">
+        <!-- Header -->
+        <div
+            matSort
+            matSortDisableClear
+            class="inventory-history-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+        >
+            <div [mat-sort-header]="'name'">Diagnosis</div>
+            <div class="hidden sm:block">Fecha de revisión</div>
+            <div class="hidden sm:block">Médico encargado</div>
+            <div class="hidden sm:block">Estado</div>
+            <div class="hidden sm:block">Opciones</div>
+        </div>
+        <!-- /Header -->
+    </div>
+
+    <ng-container *ngIf="medicalHistories$ | async as medicalHistories">
+        <ng-container
+            *ngFor="let history of medicalHistories; trackBy: trackByFn"
+        >
+            <div
+                class="inventory-history-grid inventory-history-row-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b"
+            >
+                <!-- DIAGNOSIS -->
+                <div class="truncate">OK</div>
+                <!-- /DIAGNOSIS -->
+            </div>
+        </ng-container>
+    </ng-container>
+
+    <mat-paginator
+        [length]="count"
+        [pageSizeOptions]="pageSizeOptions"
+        [ngClass]="{ 'pointer-events-none': loading }"
+        class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+    >
+    </mat-paginator>
+</ng-container>

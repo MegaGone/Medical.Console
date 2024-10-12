@@ -7,7 +7,7 @@ import {
     IMedicHistoriesPaginated,
 } from 'app/interfaces';
 import { catchError, map } from 'rxjs/operators';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { environment } from 'environments/environment';
 const API_URL = environment.API_URL;
 
@@ -15,10 +15,24 @@ const API_URL = environment.API_URL;
     providedIn: 'root',
 })
 export class MedicalHistoryService {
+    private _onSelectedPatient: Subject<Partial<IUser>>;
     private _medicHistories: BehaviorSubject<IMedicHistory[]>;
 
     constructor(private readonly _http: HttpClient) {
+        this._onSelectedPatient = new Subject();
         this._medicHistories = new BehaviorSubject([]);
+    }
+
+    public patientSelected(patient: Partial<IUser>) {
+        this._onSelectedPatient.next(patient);
+    }
+
+    public get patientSelected$(): Observable<Partial<IUser>> {
+        return this._onSelectedPatient.asObservable();
+    }
+
+    public get medicHistories$(): Observable<IMedicHistory[]> {
+        return this._medicHistories.asObservable();
     }
 
     public searchAsync(input: string): Observable<Array<Partial<IUser>>> {
