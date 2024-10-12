@@ -43,6 +43,7 @@
                             matInput
                             [required]="true"
                             formControlName="diagnosis"
+                            [maxlength]="maxLengthDiagnosis"
                         />
                         <mat-label>Diagnosis</mat-label>
                         <mat-error
@@ -171,6 +172,7 @@
                             [required]="true"
                             matTextareaAutosize
                             formControlName="treatment"
+                            [maxlength]="maxLengthTreatment"
                         ></textarea>
                         <mat-label>Descripción médica</mat-label>
                         <mat-error
@@ -184,11 +186,13 @@
                     <!-- NOTES -->
                     <mat-form-field class="fuse-mat-textarea w-full">
                         <textarea
+                            #notes
                             matInput
                             [rows]="5"
                             [required]="true"
                             matTextareaAutosize
                             formControlName="notes"
+                            [maxlength]="maxLengthNotes"
                         ></textarea>
                         <mat-label>Notas adicionales</mat-label>
                         <mat-error

@@ -36,6 +36,10 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
     public selectedVaccines: number[];
     public selectedMedicines: number[];
 
+    public maxLengthNotes: number;
+    public maxLengthDiagnosis: number;
+    public maxLengthTreatment: number;
+
     constructor(
         private readonly _fb: FormBuilder,
         private readonly _session: UserService,
@@ -61,6 +65,10 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
 
         this.selectedVaccines = [];
         this.selectedMedicines = [];
+
+        this.maxLengthNotes = 150;
+        this.maxLengthDiagnosis = 300;
+        this.maxLengthTreatment = 300;
     }
 
     ngOnInit(): void {
