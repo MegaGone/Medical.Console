@@ -100,6 +100,7 @@
                             (openedChange)="
                                 medicinesFilterControl.onClearFilter()
                             "
+                            (selectionChange)="onSelectionChange($event.value)"
                         >
                             <select-filter
                                 #medicinesFilterControl
@@ -117,8 +118,9 @@
                             </mat-option>
 
                             <mat-option
-                                *ngFor="let m of medicaments"
                                 [value]="m?.id"
+                                *ngFor="let m of medicaments"
+                                [selected]="selectedMedicines.includes(m?.id)"
                             >
                                 {{ m?.name }}
                             </mat-option>
@@ -135,6 +137,7 @@
                             (openedChange)="
                                 vaccinesFilterControl.onClearFilter()
                             "
+                            (selectionChange)="onVaccineChange($event.value)"
                         >
                             <select-filter
                                 #vaccinesFilterControl
@@ -150,8 +153,9 @@
                             </mat-option>
 
                             <mat-option
-                                *ngFor="let v of vaccines"
                                 [value]="v?.id"
+                                *ngFor="let v of vaccines"
+                                [selected]="selectedVaccines.includes(v?.id)"
                             >
                                 {{ v?.name }}
                             </mat-option>

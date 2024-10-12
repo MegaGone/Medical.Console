@@ -32,6 +32,8 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
     private _medicineSearch: Subject<string>;
 
     public Form: FormGroup;
+    public selectedVaccines: number[];
+    public selectedMedicines: number[];
 
     constructor(
         private readonly _fb: FormBuilder,
@@ -54,6 +56,9 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
         this._search = new Subject();
         this._vaccineSearch = new Subject();
         this._medicineSearch = new Subject();
+
+        this.selectedVaccines = [];
+        this.selectedMedicines = [];
     }
 
     ngOnInit(): void {
@@ -121,7 +126,14 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
             )
             .subscribe(
                 (data) => {
-                    this.medicaments = data;
+                    const mergedMedicines = [
+                        ...this.medicaments,
+                        ...data,
+                    ].filter(
+                        (value, index, self) =>
+                            index === self.findIndex((m) => m.id === value.id)
+                    );
+                    this.medicaments = mergedMedicines;
                 },
                 (err) => {
                     this.medicaments = [];
@@ -141,7 +153,12 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
             )
             .subscribe(
                 (data) => {
-                    this.vaccines = data;
+                    const mergedVaccines = [...this.vaccines, ...data].filter(
+                        (value, index, self) =>
+                            index === self.findIndex((m) => m.id === value.id)
+                    );
+
+                    this.vaccines = mergedVaccines;
                 },
                 (err) => {
                     this.vaccines = [];
@@ -173,6 +190,14 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
         this._vaccineSearch.next(value);
     }
 
+    public onSelectionChange(selectedIds: number[]): void {
+        this.selectedMedicines = selectedIds;
+    }
+
+    public onVaccineChange(selectedIds: number[]): void {
+        this.selectedVaccines = selectedIds;
+    }
+
     public onRegister() {
         if (this.Form.invalid)
             return Object.values(this.Form.controls).forEach((c) =>
@@ -183,7 +208,6 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
     }
 
     // TODO:
-    // 2. ALMACENAR LOS ID'S SELECCIONADOS EN UN ARRAY PROVISIONAL Y MOSTRARLOS EN EL HTML.
     // 3. ALMACENAR CITA
     // 4. REDIREACCIONAR A VISTA
     // 5. SI SE CREA BIEN, REDIRECCIONAR CON EL USUARIO RECIEN CREADA LA CITA.
