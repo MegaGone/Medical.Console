@@ -17,6 +17,7 @@
                 class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-64"
             >
                 <mat-select
+                    (selectionChange)="onPatientSelected($event)"
                     (openedChange)="patientsFilterControl.onClearFilter()"
                 >
                     <select-filter
@@ -24,6 +25,13 @@
                         placeholderLabel="Buscar..."
                         (searchValueOutput)="onFilterPatients($event)"
                     ></select-filter>
+
+                    <mat-option
+                        disabled
+                        *ngIf="!isLoadingPatients && !patients?.length"
+                    >
+                        No existen resultados
+                    </mat-option>
 
                     <mat-option
                         *ngFor="let p of patients"
