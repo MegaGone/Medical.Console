@@ -198,7 +198,7 @@ export class AuthService {
         }
 
         if (AuthUtils.isTokenExpiringSoon(this.accessToken)) {
-            return this.signInUsingToken();
+            return this.signOut();
         }
 
         return of(true);
