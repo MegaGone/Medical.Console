@@ -23,8 +23,52 @@
                 class="inventory-history-grid inventory-history-row-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b"
             >
                 <!-- DIAGNOSIS -->
-                <div class="truncate">OK</div>
+                <div class="truncate">{{ history?.diagnosis }}</div>
                 <!-- /DIAGNOSIS -->
+
+                <!-- VISITED AT -->
+                <div class="truncate">
+                    {{ history?.visitedAt | date : "dd/MM/yyyy" }}
+                </div>
+                <!-- /VISITED AT -->
+
+                <!-- MEDIC -->
+                <div class="truncate">
+                    {{ history?.doctor?.displayName }}
+                </div>
+                <!-- /MEDIC -->
+
+                <!-- STATUS -->
+                <div class="truncate">
+                    <mat-icon
+                        style="color: red"
+                        [matTooltip]="'Oculto'"
+                        *ngIf="+history?.isEnabled === 0"
+                        svgIcon="heroicons_outline:x-circle"
+                    ></mat-icon>
+
+                    <mat-icon
+                        style="color: green"
+                        [matTooltip]="'Visible'"
+                        *ngIf="+history?.isEnabled === 1"
+                        svgIcon="heroicons_outline:check-circle"
+                    ></mat-icon>
+                </div>
+                <!-- /STATUS -->
+
+                <!-- OPTIONS -->
+                <div class="truncate">
+                    <button
+                        mat-stroked-button
+                        [matTooltip]="'Ocultar cita'"
+                        class="min-w-10 min-h-7 h-7 px-2 leading-6 ml-2"
+                    >
+                        <mat-icon
+                            svgIcon="heroicons_outline:user-remove"
+                        ></mat-icon>
+                    </button>
+                </div>
+                <!-- /OPTIONS -->
             </div>
         </ng-container>
     </ng-container>
@@ -36,4 +80,23 @@
         class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
     >
     </mat-paginator>
+</ng-container>
+
+<ng-container *ngIf="!count && !loading">
+    <div
+        class="flex flex-col flex-auto items-center justify-center"
+        style="margin-top: 17%"
+    >
+        <mat-icon
+            class="icon-size-24"
+            [svgIcon]="'heroicons_outline:document'"
+        ></mat-icon>
+        <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">
+            {{
+                optionSelected
+                    ? "No se han encontrado citas."
+                    : "Seleccione un paciente a revisar."
+            }}
+        </div>
+    </div>
 </ng-container>

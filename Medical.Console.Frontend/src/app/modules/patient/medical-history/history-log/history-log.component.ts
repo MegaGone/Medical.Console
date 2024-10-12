@@ -30,6 +30,7 @@ export class HistoryLogComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild(MatPaginator) public paginator: MatPaginator;
 
     public loading: boolean;
+    public optionSelected: boolean;
     public medicalHistories: IMedicHistory[];
     public medicalHistories$: Observable<IMedicHistory[]>;
 
@@ -48,6 +49,7 @@ export class HistoryLogComponent implements OnInit, AfterViewInit, OnDestroy {
     ) {
         this.loading = false;
         this.medicalHistories = [];
+        this.optionSelected = false;
         this._unsubscribe = new Subject();
 
         this.page = 1;
@@ -63,7 +65,6 @@ export class HistoryLogComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngAfterViewInit(): void {
         if (this.sort && this.paginator) {
-            console.log('OK');
             this._changeDetectorRef.markForCheck();
 
             merge(this.sort.sortChange, this.paginator.page)
@@ -102,6 +103,8 @@ export class HistoryLogComponent implements OnInit, AfterViewInit, OnDestroy {
                 (res) => {
                     this.medicalHistories = res?.data;
                     this.count = res?.count;
+
+                    console.log(this.count);
                 },
                 () => {
                     this._snackbar.open(
@@ -122,7 +125,9 @@ export class HistoryLogComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((patient) => {
                 if (patient) {
+                    this.optionSelected = true;
                     this._findMedicalHistories(patient.id);
+                    this._changeDetectorRef.markForCheck();
                 }
             });
     }
