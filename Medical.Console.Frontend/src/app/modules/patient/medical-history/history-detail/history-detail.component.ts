@@ -1,10 +1,10 @@
 import { Subject } from 'rxjs';
-import { UserService } from 'app/core/user/user.service';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 import { User } from 'app/core/user/user.types';
-import { IUser } from 'app/interfaces';
+import { UserService } from 'app/core/user/user.service';
+import { IMedicine, IUser, IVaccine } from 'app/interfaces';
 import { MedicalHistoryService } from '../medical-history.service';
+import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 
 @Component({
     selector: 'app-history-detail',
@@ -19,8 +19,16 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
     public patients: Array<Partial<IUser>>;
     public selectedPatient: Partial<IUser>;
 
+    public isLoadingMedicines: boolean;
+    public medicaments: Array<Partial<IMedicine>>;
+
+    public isLoadingVaccines: boolean;
+    public vaccines: Array<Partial<IVaccine>>;
+
     private _search: Subject<string>;
     private _unsubscribe: Subject<boolean>;
+    private _vaccineSearch: Subject<string>;
+    private _medicineSearch: Subject<string>;
 
     constructor(
         private readonly _session: UserService,
@@ -31,13 +39,24 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
         this._unsubscribe = new Subject();
 
         this.patients = [];
-        this._search = new Subject();
         this.isLoadingPatients = false;
+
+        this.medicaments = [];
+        this.isLoadingMedicines = false;
+
+        this.vaccines = [];
+        this.isLoadingVaccines = false;
+
+        this._search = new Subject();
+        this._vaccineSearch = new Subject();
+        this._medicineSearch = new Subject();
     }
 
     ngOnInit(): void {
         this._getSession();
         this._onFilterPatients();
+        this._onFilterVaccines();
+        this._onFilterMedicines();
     }
 
     ngOnDestroy(): void {
@@ -76,11 +95,65 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
             );
     }
 
+    private _onFilterMedicines(): void {
+        this._medicineSearch
+            .pipe(
+                debounceTime(500),
+                switchMap((input) => this._service.searchMedicineAsync(input)),
+                takeUntil(this._unsubscribe)
+            )
+            .subscribe(
+                (data) => {
+                    this.medicaments = data;
+                },
+                (err) => {
+                    this.medicaments = [];
+                },
+                () => {
+                    this.isLoadingMedicines = false;
+                }
+            );
+    }
+
+    private _onFilterVaccines(): void {
+        this._vaccineSearch
+            .pipe(
+                debounceTime(500),
+                switchMap((input) => this._service.searchVaccineAsync(input)),
+                takeUntil(this._unsubscribe)
+            )
+            .subscribe(
+                (data) => {
+                    this.vaccines = data;
+                },
+                (err) => {
+                    this.vaccines = [];
+                },
+                () => {
+                    this.isLoadingVaccines = false;
+                }
+            );
+    }
+
     public onFilterPatients(value: string): void {
         if (!value) return;
 
         this.isLoadingPatients = true;
         this._search.next(value);
+    }
+
+    public onFilterMedicines(value: string): void {
+        if (!value) return;
+
+        this.isLoadingMedicines = true;
+        this._medicineSearch.next(value);
+    }
+
+    public onFilterVaccines(value: string): void {
+        if (!value) return;
+
+        this.isLoadingVaccines = true;
+        this._vaccineSearch.next(value);
     }
 
     // TODO:

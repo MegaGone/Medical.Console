@@ -87,27 +87,29 @@
                         <mat-select
                             [multiple]="true"
                             (openedChange)="
-                                patientsFilterControl.onClearFilter()
+                                medicinesFilterControl.onClearFilter()
                             "
                         >
                             <select-filter
-                                #patientsFilterControl
+                                #medicinesFilterControl
                                 placeholderLabel="Buscar..."
-                                (searchValueOutput)="onFilterPatients($event)"
+                                (searchValueOutput)="onFilterMedicines($event)"
                             ></select-filter>
 
                             <mat-option
                                 disabled
-                                *ngIf="!isLoadingPatients && !patients?.length"
+                                *ngIf="
+                                    !isLoadingMedicines && !medicaments?.length
+                                "
                             >
                                 No existen resultados
                             </mat-option>
 
                             <mat-option
-                                *ngFor="let p of patients"
-                                [value]="p?.id"
+                                *ngFor="let m of medicaments"
+                                [value]="m?.id"
                             >
-                                {{ p?.displayName }}
+                                {{ m?.name }}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -119,27 +121,27 @@
                         <mat-select
                             [multiple]="true"
                             (openedChange)="
-                                patientsFilterControl.onClearFilter()
+                                vaccinesFilterControl.onClearFilter()
                             "
                         >
                             <select-filter
-                                #patientsFilterControl
+                                #vaccinesFilterControl
                                 placeholderLabel="Buscar..."
-                                (searchValueOutput)="onFilterPatients($event)"
+                                (searchValueOutput)="onFilterVaccines($event)"
                             ></select-filter>
 
                             <mat-option
                                 disabled
-                                *ngIf="!isLoadingPatients && !patients?.length"
+                                *ngIf="!isLoadingVaccines && !vaccines?.length"
                             >
                                 No existen resultados
                             </mat-option>
 
                             <mat-option
-                                *ngFor="let p of patients"
-                                [value]="p?.id"
+                                *ngFor="let v of vaccines"
+                                [value]="v?.id"
                             >
-                                {{ p?.displayName }}
+                                {{ v?.name }}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
