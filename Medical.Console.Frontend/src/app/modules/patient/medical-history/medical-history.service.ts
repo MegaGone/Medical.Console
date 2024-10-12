@@ -9,6 +9,7 @@ import {
     ISearchMedicinesAsync,
     IMedicHistoriesPaginated,
     ICreateMedicHistoryResponse,
+    IDisableMedicHistoryResponse,
 } from 'app/interfaces';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from 'environments/environment';
@@ -117,6 +118,17 @@ export class MedicalHistoryService {
             )
             .pipe(
                 map((res) => res?.stored),
+                catchError((err) => of(false))
+            );
+    }
+
+    public delete(id: number): Observable<boolean> {
+        return this._http
+            .delete<IDisableMedicHistoryResponse>(
+                `${API_URL}medical-history/delete/${id}`
+            )
+            .pipe(
+                map((res) => res?.disabled),
                 catchError((err) => of(false))
             );
     }

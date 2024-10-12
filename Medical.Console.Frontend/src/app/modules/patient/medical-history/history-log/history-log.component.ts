@@ -13,7 +13,7 @@ import { merge, Observable, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
-import { IMedicHistory } from 'app/interfaces';
+import { IMedicHistory, IUser } from 'app/interfaces';
 import { SnackbarService } from 'app/core/util';
 import { fuseAnimations } from '@fuse/animations';
 
@@ -40,6 +40,7 @@ export class HistoryLogComponent implements OnInit, AfterViewInit, OnDestroy {
     public pageSize: number;
     public pageSizeOptions: number[];
 
+    public patientSelected: Partial<IUser>;
     private _unsubscribe: Subject<boolean>;
 
     constructor(
@@ -124,8 +125,29 @@ export class HistoryLogComponent implements OnInit, AfterViewInit, OnDestroy {
             .subscribe((patient) => {
                 if (patient) {
                     this.optionSelected = true;
+                    this.patientSelected = patient;
                     this._findMedicalHistories(patient.id);
                     this._changeDetectorRef.markForCheck();
+                }
+            });
+    }
+
+    public onDelete(id: number) {
+        this._service
+            .delete(id)
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((res) => {
+                const message: string = !res
+                    ? 'Ha ocurrido un error al ocultar el historial.'
+                    : 'Se ha ocultado el historial de manera exitósa.';
+
+                this._snackbar.open(message);
+                if (res) {
+                    this._findMedicalHistories(
+                        this.patientSelected?.id,
+                        this.paginator.pageIndex + 1,
+                        this.paginator.pageSize
+                    );
                 }
             });
     }

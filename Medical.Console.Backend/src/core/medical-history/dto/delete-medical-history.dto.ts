@@ -5,5 +5,5 @@ export class DeleteMedicalHistoryDto {
   @IsNumber()
   @IsNotEmpty()
   @Transform(({ value }) => +value)
-  identificator: number;
+  id: number;
 }

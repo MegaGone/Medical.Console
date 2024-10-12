@@ -1,3 +1,4 @@
+import { Request } from "express";
 import { unixDate } from "src/helpers";
 import {
   FindMedicalHistoryDto,
@@ -9,7 +10,7 @@ import { ROLE_ENUM } from "../auth/enums";
 import { RoleGuard } from "../auth/guards";
 import { Roles } from "../auth/decorators";
 import { MedicalHistoryService } from "./medical-history.service";
-import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Query, Req, UseGuards } from "@nestjs/common";
 
 @Roles(ROLE_ENUM.ADMIN, ROLE_ENUM.DOCTOR)
 @UseGuards(RoleGuard)
@@ -33,9 +34,17 @@ export class MedicalHistoryController {
   }
 
   @Get("/findPaginated")
-  public async findPaginated(@Query() findHistoryPaginatedDto: FindHistoryPaginatedDto) {
+  public async findPaginated(
+    @Query() findHistoryPaginatedDto: FindHistoryPaginatedDto,
+    @Req() request: Request,
+  ) {
     const { page, pageSize, patientId } = findHistoryPaginatedDto;
-    return await this._service.findPaginated(page, pageSize, patientId);
+    return await this._service.findPaginated(
+      page,
+      pageSize,
+      patientId,
+      request["role"] ?? ROLE_ENUM.PATIENT,
+    );
   }
 
   @Get("/findById/:identificator")
@@ -46,8 +55,8 @@ export class MedicalHistoryController {
 
   @Delete("/delete/:id")
   public async disable(@Param() deleteMedicalHistoryDto: DeleteMedicalHistoryDto) {
-    const { identificator } = deleteMedicalHistoryDto;
-    const disabled = await this._service.disable(JSON.stringify(identificator));
+    const { id } = deleteMedicalHistoryDto;
+    const disabled = await this._service.disable(JSON.stringify(id));
     return { disabled };
   }
 }

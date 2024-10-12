@@ -140,7 +140,7 @@ export class MedicalHistoryService {
         },
         where: {
           userId: patientId,
-          isEnabled: role === ROLE_ENUM.ADMIN ? undefined : 1,
+          isEnabled: role !== ROLE_ENUM.PATIENT ? undefined : 1,
         },
         relations: {
           doctor: true,

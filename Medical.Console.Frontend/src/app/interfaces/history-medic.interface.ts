@@ -38,3 +38,7 @@ export interface IMedicHistoriesPaginated {
 export interface ICreateMedicHistoryResponse {
     stored: boolean;
 }
+
+export interface IDisableMedicHistoryResponse {
+    disabled: boolean;
+}

@@ -61,6 +61,7 @@
                     <button
                         mat-stroked-button
                         [matTooltip]="'Ocultar cita'"
+                        (click)="onDelete(history?.identificator)"
                         class="min-w-10 min-h-7 h-7 px-2 leading-6 ml-2"
                     >
                         <mat-icon
