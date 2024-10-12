@@ -1,7 +1,10 @@
 import { NgModule } from '@angular/core';
 
 import { MedicalHistoryComponent } from './medical-history.component';
+import { HistoryLogComponent } from './history-log/history-log.component';
 import { MedicalHistoryRoutingModule } from './medical-history-routing.module';
+import { SelectFilterComponent } from './select-filter/select-filter.component';
+import { HistoryDetailComponent } from './history-detail/history-detail.component';
 
 import { SnackbarService } from 'app/core/util';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,12 +22,11 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { HistoryLogComponent } from './history-log/history-log.component';
-import { HistoryDetailComponent } from './history-detail/history-detail.component';
 
 @NgModule({
     declarations: [
         HistoryLogComponent,
+        SelectFilterComponent,
         HistoryDetailComponent,
         MedicalHistoryComponent,
     ],

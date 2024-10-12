@@ -13,6 +13,25 @@
 
         <!-- Button -->
         <div class="flex flex-shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+            <mat-form-field>
+                <mat-select
+                    (openedChange)="patientsFilterControl.onClearFilter()"
+                >
+                    <select-filter
+                        #patientsFilterControl
+                        placeholderLabel="Buscar..."
+                        (searchValueOutput)="onFilterPatients($event)"
+                    ></select-filter>
+
+                    <mat-option
+                        *ngFor="let p of patients"
+                        [value]="p?.displayName"
+                    >
+                        {{ p?.displayName }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
             <button
                 class="ml-4"
                 mat-flat-button

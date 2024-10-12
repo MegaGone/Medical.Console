@@ -1,0 +1,17 @@
+<input
+    matInput
+    #searchSelectInput
+    autocomplete="off"
+    [placeholder]="placeholderLabel"
+    (keydown)="handleKeyDown($event)"
+    [formControl]="searchInputFormControl"
+/>
+<button
+    mat-button
+    mat-icon-button
+    (click)="onClearFilter()"
+    aria-label="Limpiar filtro"
+    *ngIf="searchInputFormControl?.value"
+>
+    <mat-icon>close</mat-icon>
+</button>
