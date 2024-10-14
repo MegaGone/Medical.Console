@@ -14,6 +14,16 @@ export interface ISearchVaccinesAsync {
     data: Array<Partial<IVaccine>>;
 }
 
+export interface IUserVaccine {
+    id: number;
+    vaccine: Partial<IVaccine>;
+}
+
+export interface IUserMedicine {
+    id: number;
+    medicine: Partial<IMedicine>;
+}
+
 export interface IMedicHistory {
     id: number;
     notes: string;
@@ -26,8 +36,11 @@ export interface IMedicHistory {
     treatment: string;
     identificator: string;
     doctor: Partial<IUser>;
+    patient: Partial<IUser>;
     vaccineIds: Array<number>;
     medicineIds: Array<number>;
+    vaccines?: Array<IUserVaccine>;
+    medicines?: Array<IUserMedicine>;
 }
 
 export interface IMedicHistoriesPaginated {

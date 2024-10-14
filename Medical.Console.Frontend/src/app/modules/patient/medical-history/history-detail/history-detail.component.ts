@@ -1,13 +1,20 @@
 import { Subject } from 'rxjs';
 import { User } from 'app/core/user/user.types';
 import { UserService } from 'app/core/user/user.service';
-import { IMedicine, IUser, IVaccine } from 'app/interfaces';
+import {
+    IMedicHistory,
+    IMedicine,
+    IUser,
+    IUserMedicine,
+    IUserVaccine,
+    IVaccine,
+} from 'app/interfaces';
 import { MedicalHistoryService } from '../medical-history.service';
 import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SnackbarService } from 'app/core/util';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'app-history-detail',
@@ -15,7 +22,7 @@ import { Router } from '@angular/router';
     styleUrls: ['./history-detail.component.scss'],
 })
 export class HistoryDetailComponent implements OnInit, OnDestroy {
-    public user: User;
+    public doctor: User;
     public currentDate: Date;
 
     public isLoadingPatients: boolean;
@@ -41,10 +48,15 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
     public maxLengthDiagnosis: number;
     public maxLengthTreatment: number;
 
+    public isNewHistory: boolean;
+    public loadingHistory: boolean;
+    public history: Partial<IMedicHistory>;
+
     constructor(
         private readonly _router: Router,
         private readonly _fb: FormBuilder,
         private readonly _session: UserService,
+        private readonly _route: ActivatedRoute,
         private readonly _snackbar: SnackbarService,
         private readonly _service: MedicalHistoryService,
         private readonly _changeDetectorRef: ChangeDetectorRef
@@ -71,9 +83,14 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
         this.maxLengthNotes = 150;
         this.maxLengthDiagnosis = 300;
         this.maxLengthTreatment = 300;
+
+        this.isNewHistory = true;
+        this.loadingHistory = false;
     }
 
     ngOnInit(): void {
+        this._onGetParam();
+
         this._getSession();
         this._initForm();
         this._onFilterPatients();
@@ -88,24 +105,22 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
 
     private _initForm(): void {
         this.Form = this._fb.group({
-            vaccineIds: [null],
-            medicineIds: [null],
+            vaccineIds: [],
+            medicineIds: [],
             notes: ['', [Validators.required]],
             userId: ['', [Validators.required]],
             diagnosis: ['', [Validators.required]],
             treatment: ['', [Validators.required]],
-            doctorId: [this.user?.id, [Validators.required]],
+            doctorId: [this.doctor?.id || null, [Validators.required]],
         });
     }
 
-    private _getSession() {
+    private _getSession(): void {
         this._session.user$
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((user: User) => {
-                this.user = user;
+                this.doctor = user;
                 this._changeDetectorRef.markForCheck();
-
-                console.log(this.user);
             });
     }
 
@@ -179,6 +194,97 @@ export class HistoryDetailComponent implements OnInit, OnDestroy {
                     this.isLoadingVaccines = false;
                 }
             );
+    }
+
+    private _onGetParam(): void {
+        const identificator: string = this._route.snapshot.paramMap.get('id');
+
+        if (!identificator) this._router.navigate(['../']);
+        if (identificator === 'nueva-cita') return;
+
+        this.isNewHistory = false;
+        this._onGetMedicHistory(+identificator);
+    }
+
+    private _onGetMedicHistory(id: number): void {
+        this.loadingHistory = true;
+
+        this._service
+            .findOne(id)
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe(
+                (res) => {
+                    if (!res) {
+                        this._router.navigate(['/paciente/historial']);
+                        return;
+                    }
+
+                    this.history = res;
+                    this._onSetData();
+                },
+                (err) => {
+                    this._router.navigate(['/paciente/historial']);
+                },
+                () => {
+                    this.loadingHistory = false;
+                }
+            );
+    }
+
+    private _onSetData(): void {
+        this.Form.patchValue({
+            notes: this.history?.notes,
+            diagnosis: this.history?.diagnosis,
+            treatment: this.history?.treatment,
+            userId: this.history?.patient?.displayName,
+        });
+
+        const { medicines, vaccines } = this.history;
+
+        this._handleUserVaccine(vaccines);
+        this._handleUserMedicine(medicines);
+
+        Object.keys(this.Form.controls).forEach((key) => {
+            this.Form.get(key)?.disable({ onlySelf: true, emitEvent: false });
+        });
+    }
+
+    private _handleUserMedicine(medicines: Array<IUserMedicine>): void {
+        if (!medicines || !medicines?.length) return;
+
+        const sanitized: Array<Partial<IMedicine>> = medicines?.map(
+            (m: IUserMedicine) => {
+                return {
+                    ...m?.medicine,
+                };
+            }
+        );
+
+        this.medicaments = sanitized;
+        this.selectedMedicines = sanitized?.map((m) => m?.id);
+
+        this.Form.patchValue({
+            medicineIds: this.selectedMedicines,
+        });
+    }
+
+    private _handleUserVaccine(vaccines: Array<IUserVaccine>): void {
+        if (!vaccines || !vaccines?.length) return;
+
+        const sanitized: Array<Partial<IVaccine>> = vaccines?.map(
+            (v: IUserVaccine) => {
+                return {
+                    ...v?.vaccine,
+                };
+            }
+        );
+
+        this.vaccines = sanitized;
+        this.selectedVaccines = sanitized?.map((v) => v?.id);
+
+        this.Form.patchValue({
+            vaccineIds: this.selectedVaccines,
+        });
     }
 
     public onFilterPatients(value: string): void {

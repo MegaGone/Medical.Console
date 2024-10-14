@@ -49,6 +49,7 @@ export class MedicalHistoryService {
         },
         relations: {
           doctor: true,
+          patient: true,
           vaccines: {
             vaccine: true,
           },
@@ -57,6 +58,11 @@ export class MedicalHistoryService {
           },
         },
         select: {
+          patient: {
+            id: true,
+            email: true,
+            displayName: true,
+          },
           doctor: {
             id: true,
             email: true,
@@ -85,7 +91,8 @@ export class MedicalHistoryService {
 
       return { data: record };
     } catch (error) {
-      this._logger.error("[ERROR][MEDICAL HISTORY][FIND BY ID]", error);
+      console.log("ERROR ------------>", error);
+      this._logger.error("[ERROR][MEDICAL HISTORY][FIND BY ID]");
       return null;
     }
   }
@@ -197,6 +204,15 @@ export class MedicalHistoryService {
       return identifiers && identifiers?.length >= 1;
     } catch (error) {
       this._logger.error("[ERROR][MEDICAL HISTORY][INSERT MEDICINES]", error);
+      return false;
+    }
+  }
+
+  public async verifyIdentificator(identificator: string): Promise<boolean> {
+    try {
+      const record = await this._repository.findOne({ where: { identificator } });
+      return !record ? false : true;
+    } catch (error) {
       return false;
     }
   }

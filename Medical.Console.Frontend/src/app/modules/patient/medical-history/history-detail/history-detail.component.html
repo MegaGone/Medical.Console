@@ -4,7 +4,11 @@
         <div class="flex flex-col w-full max-w-4xl">
             <!-- BACK -->
             <div class="-ml-4 sm:mt-8">
-                <a mat-button [routerLink]="['../']" [color]="'primary'">
+                <a
+                    mat-button
+                    [routerLink]="['/paciente/historial']"
+                    [color]="'primary'"
+                >
                     <mat-icon
                         [svgIcon]="'heroicons_outline:arrow-narrow-left'"
                     ></mat-icon>
@@ -17,7 +21,11 @@
             <div
                 class="mt-2 text-4xl sm:text-7xl font-extrabold tracking-tight leading-tight"
             >
-                Nueva cita
+                {{
+                    !history?.identificator
+                        ? "Nueva cita"
+                        : "Cita No. #" + history?.identificator
+                }}
             </div>
             <!-- /TITLE -->
 
@@ -29,10 +37,20 @@
                     <!-- DETAILS -->
                     <div class="mb-6">
                         <div class="text-2xl font-bold tracking-tight">
-                            {{ currentDate | date : "dd/MM/yyyy" }}
+                            {{
+                                (!history?.visitedAt
+                                    ? currentDate
+                                    : history?.visitedAt
+                                ) | date : "dd/MM/yyyy"
+                            }}
                         </div>
                         <div class="text-secondary">
-                            Revisado por: <strong>{{ user?.name }}</strong>
+                            Revisado por:
+                            <strong>{{
+                                !history?.doctor
+                                    ? doctor?.name
+                                    : history?.doctor?.displayName
+                            }}</strong>
                         </div>
                     </div>
                     <!-- /DETAILS -->
@@ -55,7 +73,7 @@
                     <!-- DIAGNOSIS -->
 
                     <!-- PATIENT -->
-                    <mat-form-field class="w-full">
+                    <mat-form-field *ngIf="isNewHistory" class="w-full">
                         <mat-label>Paciente</mat-label>
                         <mat-select
                             [required]="true"
@@ -90,10 +108,19 @@
                             Campo requerido.
                         </mat-error>
                     </mat-form-field>
+
+                    <mat-form-field *ngIf="!isNewHistory" class="w-full">
+                        <input
+                            matInput
+                            [required]="true"
+                            formControlName="userId"
+                        />
+                        <mat-label>Paciente</mat-label>
+                    </mat-form-field>
                     <!-- /PATIENT -->
 
                     <!-- MEDICINES -->
-                    <mat-form-field class="w-full">
+                    <mat-form-field *ngIf="isNewHistory" class="w-full">
                         <mat-label>Medicinas</mat-label>
                         <mat-select
                             [multiple]="true"
@@ -127,10 +154,26 @@
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
+
+                    <mat-form-field *ngIf="!isNewHistory" class="w-full">
+                        <mat-label>Medicinas</mat-label>
+                        <mat-select
+                            [multiple]="true"
+                            formControlName="medicineIds"
+                        >
+                            <mat-option
+                                [value]="m?.id"
+                                *ngFor="let m of medicaments"
+                                [selected]="selectedMedicines.includes(m?.id)"
+                            >
+                                {{ m?.name }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
                     <!-- /MEDICINES -->
 
                     <!-- VACCINES -->
-                    <mat-form-field class="w-full">
+                    <mat-form-field *ngIf="isNewHistory" class="w-full">
                         <mat-label>Vacunas</mat-label>
                         <mat-select
                             [multiple]="true"
@@ -153,6 +196,22 @@
                                 No existen resultados
                             </mat-option>
 
+                            <mat-option
+                                [value]="v?.id"
+                                *ngFor="let v of vaccines"
+                                [selected]="selectedVaccines.includes(v?.id)"
+                            >
+                                {{ v?.name }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field *ngIf="!isNewHistory" class="w-full">
+                        <mat-label>Vacunas</mat-label>
+                        <mat-select
+                            [multiple]="true"
+                            formControlName="vaccineIds"
+                        >
                             <mat-option
                                 [value]="v?.id"
                                 *ngFor="let v of vaccines"
@@ -209,6 +268,7 @@
                             class="ml-2"
                             mat-flat-button
                             [color]="'primary'"
+                            *ngIf="isNewHistory"
                             (click)="onRegister()"
                             [disabled]="Form.invalid || Form.pristine"
                         >
