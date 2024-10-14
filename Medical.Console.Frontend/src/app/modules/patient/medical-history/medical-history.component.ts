@@ -1,4 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    OnInit,
+} from '@angular/core';
 import { MedicalHistoryService } from './medical-history.service';
 import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -12,7 +18,9 @@ import { User } from 'app/core/user/user.types';
     templateUrl: './medical-history.component.html',
     styleUrls: ['./medical-history.component.scss'],
 })
-export class MedicalHistoryComponent implements OnInit {
+export class MedicalHistoryComponent
+    implements OnInit, AfterViewInit, OnDestroy
+{
     public isLoadingPatients: boolean;
     public patients: Array<Partial<IUser>>;
     public selectedPatient: Partial<IUser>;
@@ -25,6 +33,7 @@ export class MedicalHistoryComponent implements OnInit {
 
     constructor(
         private readonly _session: UserService,
+        private readonly _cdr: ChangeDetectorRef,
         private readonly _service: MedicalHistoryService
     ) {
         this._search = new Subject();
@@ -38,10 +47,16 @@ export class MedicalHistoryComponent implements OnInit {
     ngOnInit(): void {
         this._getSession();
         this._onFilterPatients();
+    }
 
-        setTimeout(() => {
-            this._onGetRecords();
-        }, 1000);
+    ngAfterViewInit(): void {
+        this._onGetRecords();
+        this._cdr.detectChanges();
+    }
+
+    ngOnDestroy(): void {
+        this._unsubscribe.next();
+        this._unsubscribe.complete();
     }
 
     private _getSession(): void {
