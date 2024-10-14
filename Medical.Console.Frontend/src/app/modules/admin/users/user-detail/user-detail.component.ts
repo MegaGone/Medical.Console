@@ -50,7 +50,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
             lastName: [this?.data?.lastName, [Validators.required]],
             firstName: [this?.data?.firstName, [Validators.required]],
             displayName: [this?.data?.displayName, [Validators.required]],
-            isEnabled: [+this?.data?.isEnabled || 0, [Validators.required]],
+            isEnabled: [+this?.data?.isEnabled || 1, [Validators.required]],
         });
 
         if (this.data) {

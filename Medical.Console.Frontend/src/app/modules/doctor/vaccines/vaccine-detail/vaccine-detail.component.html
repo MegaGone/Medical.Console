@@ -3,7 +3,7 @@
 
 <form name="Form" [formGroup]="Form">
     <mat-form-field appearance="outline" floatLabel="always">
-        <mat-label>Medicamento</mat-label>
+        <mat-label>Vacuncación</mat-label>
         <input matInput formControlName="name" />
         <mat-error *ngIf="Form.get('name').invalid && Form.get('name').touched">
             Este campo es requerido.

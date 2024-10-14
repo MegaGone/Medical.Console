@@ -87,7 +87,7 @@
         </mat-error>
     </mat-form-field>
 
-    <mat-form-field>
+    <mat-form-field *ngIf="data">
         <mat-select placeholder="Estado" formControlName="isEnabled">
             <mat-option *ngFor="let state of states" [value]="state.value">{{
                 state.key

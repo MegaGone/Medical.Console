@@ -20,6 +20,7 @@
             *ngFor="let history of medicalHistories; trackBy: trackByFn"
         >
             <div
+                [routerLink]="['/paciente/historial', history?.identificator]"
                 class="inventory-history-grid inventory-history-row-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b"
             >
                 <!-- DIAGNOSIS -->
