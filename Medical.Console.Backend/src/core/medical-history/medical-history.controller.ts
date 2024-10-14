@@ -23,7 +23,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 
-@Roles(ROLE_ENUM.ADMIN, ROLE_ENUM.DOCTOR)
+@Roles(ROLE_ENUM.ADMIN, ROLE_ENUM.DOCTOR, ROLE_ENUM.PATIENT)
 @UseGuards(RoleGuard)
 @Controller("medical-history")
 export class MedicalHistoryController {

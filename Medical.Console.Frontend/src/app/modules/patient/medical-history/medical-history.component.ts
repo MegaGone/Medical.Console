@@ -21,6 +21,7 @@ export class MedicalHistoryComponent implements OnInit {
     private _unsubscribe: Subject<boolean>;
 
     public canManage: boolean;
+    public user: User;
 
     constructor(
         private readonly _session: UserService,
@@ -37,16 +38,18 @@ export class MedicalHistoryComponent implements OnInit {
     ngOnInit(): void {
         this._getSession();
         this._onFilterPatients();
+
+        setTimeout(() => {
+            this._onGetRecords();
+        }, 1000);
     }
 
     private _getSession(): void {
         this._session.user$
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((user: User) => {
-                console.log(user);
-
+                this.user = user;
                 this.canManage = user?.role != 3;
-                console.log(this.canManage);
             });
     }
 
@@ -68,6 +71,18 @@ export class MedicalHistoryComponent implements OnInit {
                     this.isLoadingPatients = false;
                 }
             );
+    }
+
+    private _onGetRecords(): void {
+        if (this.user?.role != 3) return;
+
+        this.selectedPatient = {
+            id: +this.user?.id,
+            email: this.user?.email,
+            displayName: this.user?.name,
+        };
+
+        this._service.patientSelected(this.selectedPatient);
     }
 
     public onFilterPatients(value: string): void {
