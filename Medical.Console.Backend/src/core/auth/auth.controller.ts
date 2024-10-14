@@ -39,8 +39,9 @@ export class AuthController {
 
     const userData = {
       id: user?.id,
-      name: user?.displayName,
+      role: user?.role,
       email: user?.email,
+      name: user?.displayName,
     };
 
     return {

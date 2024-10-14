@@ -4,6 +4,8 @@ import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { IUser } from 'app/interfaces';
 import { MatSelectChange } from '@angular/material/select';
+import { UserService } from 'app/core/user/user.service';
+import { User } from 'app/core/user/user.types';
 
 @Component({
     selector: 'app-medical-history',
@@ -18,16 +20,34 @@ export class MedicalHistoryComponent implements OnInit {
     private _search: Subject<string>;
     private _unsubscribe: Subject<boolean>;
 
-    constructor(private readonly _service: MedicalHistoryService) {
+    public canManage: boolean;
+
+    constructor(
+        private readonly _session: UserService,
+        private readonly _service: MedicalHistoryService
+    ) {
         this._search = new Subject();
         this._unsubscribe = new Subject();
 
         this.patients = [];
+        this.canManage = false;
         this.isLoadingPatients = false;
     }
 
     ngOnInit(): void {
+        this._getSession();
         this._onFilterPatients();
+    }
+
+    private _getSession(): void {
+        this._session.user$
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((user: User) => {
+                console.log(user);
+
+                this.canManage = user?.role != 3;
+                console.log(this.canManage);
+            });
     }
 
     private _onFilterPatients(): void {
