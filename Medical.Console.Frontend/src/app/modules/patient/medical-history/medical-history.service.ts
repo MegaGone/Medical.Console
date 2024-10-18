@@ -146,4 +146,34 @@ export class MedicalHistoryService {
                 catchError((err) => of(null))
             );
     }
+
+    public async onExport(
+        id: number,
+        page: number = 1,
+        pageSize: number = 1000
+    ): Promise<Array<IMedicHistory>> {
+        try {
+            const params = new HttpParams()
+                .append('page', page)
+                .append('pageSize', pageSize)
+                .append('patientId', id);
+
+            const result = await this._http
+                .get<IMedicHistoriesPaginated>(
+                    `${API_URL}medical-history/findPaginated`,
+                    {
+                        params,
+                    }
+                )
+                .pipe(
+                    map((res) => res?.data),
+                    catchError((err) => of([]))
+                )
+                .toPromise();
+
+            return result;
+        } catch (error) {
+            return [];
+        }
+    }
 }

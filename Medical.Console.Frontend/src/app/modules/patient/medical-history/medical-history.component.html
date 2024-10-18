@@ -53,6 +53,38 @@
                 <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
                 <span class="ml-2 mr-1">Nueva cita</span>
             </button>
+
+            <div *ngIf="canManage" class="flex flex-wrap ml-2 mt-2">
+                <ng-container>
+                    <a
+                        [class.cursor-not-allowed]="
+                            loadingExport || !selectedPatient
+                        "
+                        [class.bg-gray-300]="loadingExport"
+                        (click)="
+                            !loadingExport && selectedPatient && onExportData()
+                        "
+                        class="flex flex-col w-18 h-18 m-2 p-4 rounded-2xl cursor-pointer bg-card"
+                    >
+                        <div class="aspect-w-9 aspect-h-6">
+                            <div class="flex items-center justify-center">
+                                <!-- Icons -->
+                                <div class="relative">
+                                    <mat-icon
+                                        class="icon-size-14 text-hint"
+                                        [svgIcon]="'iconsmind:file'"
+                                    ></mat-icon>
+                                    <div
+                                        class="absolute left-0 bottom-0 px-1.5 rounded text-sm font-semibold leading-5 text-white bg-green-600"
+                                    >
+                                        XLSX
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </ng-container>
+            </div>
         </div>
         <!-- /Button -->
     </div>

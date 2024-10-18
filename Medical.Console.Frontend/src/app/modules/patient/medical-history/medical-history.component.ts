@@ -5,13 +5,16 @@ import {
     OnDestroy,
     OnInit,
 } from '@angular/core';
+import * as XLSX from 'xlsx';
 import { MedicalHistoryService } from './medical-history.service';
 import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { IUser } from 'app/interfaces';
+import { IMedicHistory, IUser } from 'app/interfaces';
 import { MatSelectChange } from '@angular/material/select';
 import { UserService } from 'app/core/user/user.service';
 import { User } from 'app/core/user/user.types';
+import { SnackbarService } from 'app/core/util';
+import { getHexadecimalDate, transformDate } from 'app/utils';
 
 @Component({
     selector: 'app-medical-history',
@@ -31,9 +34,12 @@ export class MedicalHistoryComponent
     public canManage: boolean;
     public user: User;
 
+    public loadingExport: boolean;
+
     constructor(
         private readonly _session: UserService,
         private readonly _cdr: ChangeDetectorRef,
+        private readonly _snackbar: SnackbarService,
         private readonly _service: MedicalHistoryService
     ) {
         this._search = new Subject();
@@ -41,6 +47,7 @@ export class MedicalHistoryComponent
 
         this.patients = [];
         this.canManage = false;
+        this.loadingExport = false;
         this.isLoadingPatients = false;
     }
 
@@ -115,5 +122,43 @@ export class MedicalHistoryComponent
 
         this.selectedPatient = patient;
         this._service.patientSelected(this.selectedPatient);
+    }
+
+    public async onExportData() {
+        try {
+            if (!this.selectedPatient && !this.selectedPatient?.id) return;
+
+            this.loadingExport = true;
+            const history: Array<IMedicHistory> = await this._service.onExport(
+                this.selectedPatient.id
+            );
+
+            const sanitized = history.map(({ id, ...h }) => {
+                return {
+                    'Número de cita': h?.identificator,
+                    Tratamiento: h?.treatment,
+                    'Fecha de visita': transformDate(h?.visitedAt?.toString()),
+                    Diagnóstico: h?.diagnosis,
+                    'Notas adicionales': h?.notes,
+                    'Médico encargado': h?.doctor?.displayName,
+                };
+            });
+
+            const basename: string = getHexadecimalDate();
+            const filename: string = `${basename}.xlsx`;
+
+            const ws = XLSX.utils.aoa_to_sheet([]);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.sheet_add_json(ws, sanitized);
+
+            XLSX.utils.book_append_sheet(wb, ws, basename);
+            XLSX.writeFile(wb, filename);
+        } catch (error) {
+            return this._snackbar.open(
+                'Ha ocurrido un error al exportar el historial médico.'
+            );
+        } finally {
+            this.loadingExport = false;
+        }
     }
 }
