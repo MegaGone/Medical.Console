@@ -11,6 +11,34 @@
 
         <!-- Button -->
         <div class="flex flex-shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+            <div class="flex flex-wrap ml-2 mt-2">
+                <ng-container>
+                    <a
+                        [class.bg-gray-300]="loadingExport"
+                        (click)="!loadingExport && onExportData()"
+                        [class.cursor-not-allowed]="loadingExport"
+                        class="flex flex-col w-18 h-18 m-2 p-4 rounded-2xl cursor-pointer bg-card"
+                    >
+                        <div class="aspect-w-9 aspect-h-6">
+                            <div class="flex items-center justify-center">
+                                <!-- Icons -->
+                                <div class="relative">
+                                    <mat-icon
+                                        class="icon-size-14 text-hint"
+                                        [svgIcon]="'iconsmind:file'"
+                                    ></mat-icon>
+                                    <div
+                                        class="absolute left-0 bottom-0 px-1.5 rounded text-sm font-semibold leading-5 text-white bg-green-600"
+                                    >
+                                        XLSX
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </ng-container>
+            </div>
+
             <button
                 class="ml-4"
                 mat-flat-button

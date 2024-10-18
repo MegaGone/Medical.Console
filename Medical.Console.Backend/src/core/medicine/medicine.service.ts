@@ -111,6 +111,7 @@ export class MedicineService {
 
       return { data: medicines };
     } catch (error) {
+      this._logger.error("[ERROR][MEDICINE][FIND PAGINATED]", error);
       return { data: [] };
     }
   }

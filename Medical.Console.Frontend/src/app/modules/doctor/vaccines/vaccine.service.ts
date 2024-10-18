@@ -83,4 +83,31 @@ export class VaccineService {
                 catchError((err) => of(false))
             );
     }
+
+    public async onExport(
+        page: number = 1,
+        pageSize: number = 10
+    ): Promise<Array<IVaccine>> {
+        try {
+            const params = new HttpParams()
+                .append('page', page)
+                .append('pageSize', pageSize);
+
+            const result = await this._http
+                .get<IFindVaccinesPaginated>(
+                    `${API_URL}vaccine/findPaginated`,
+                    { params }
+                )
+                .pipe(
+                    map((res) => res.data),
+                    catchError((err) => {
+                        return of([]);
+                    })
+                )
+                .toPromise();
+            return result;
+        } catch (error) {
+            return [];
+        }
+    }
 }
