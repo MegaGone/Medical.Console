@@ -11,7 +11,8 @@
         "build": "ng build",
         "watch": "ng build --watch --configuration development",
         "test": "ng test",
-        "lint": "ng lint"
+        "lint": "ng lint",
+        "build:prod": "set NODE_OPTIONS=--openssl-legacy-provider && ng build --prod --output-hashing=all --base-href=https://portal.centromedicohuehuetenango.com"
     },
     "dependencies": {
         "@angular/animations": "12.2.1",
